@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, MapPin, Calendar, Heart, Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
+import { Search, MapPin, Calendar, Heart, Menu, X, LogOut, LayoutDashboard, Sparkles } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleAuthChange = () => {
-      setIsLoggedIn(!!localStorage.getItem('token'));
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    const handleAuthChange = () => setIsLoggedIn(!!localStorage.getItem('token'));
 
+    window.addEventListener('scroll', handleScroll);
     window.addEventListener('authChange', handleAuthChange);
-    return () => window.removeEventListener('authChange', handleAuthChange);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('authChange', handleAuthChange);
+    };
   }, []);
 
   const handleLogout = () => {
@@ -23,124 +27,74 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-2 rounded-lg">
-                <Calendar className="text-white w-5 h-5" />
-              </div>
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
-                EventKerala
-              </span>
-            </Link>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex justify-center px-4 py-6 ${isScrolled ? 'pt-4' : 'pt-8'}`}>
+      <div className={`w-full max-w-6xl transition-all duration-500 rounded-[2rem] border border-white/20 backdrop-blur-2xl shadow-2xl flex items-center justify-between px-6 py-4 ${
+        isScrolled ? 'bg-emerald-950/90 py-3 shadow-emerald-900/20' : 'bg-white/10'
+      }`}>
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="bg-heritage-gradient p-2.5 rounded-2xl shadow-lg ring-1 ring-white/20 group-hover:scale-110 transition-transform">
+            <Sparkles className="text-gold-500 w-5 h-5 animate-pulse" />
           </div>
+          <span className={`text-2xl font-display font-black tracking-tight ${isScrolled ? 'text-white' : 'text-emerald-900'}`}>
+            Event<span className="text-gold-500 italic">Kerala</span>
+          </span>
+        </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-10">
-            <div className="flex items-center space-x-8">
-              <Link to="/" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Events</Link>
-              <Link to="/places" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Places</Link>
-            </div>
-            
-            {isLoggedIn ? (
-              <div className="flex items-center gap-6">
-                <Link to="/admin" className="text-gray-600 hover:text-indigo-600 font-bold flex items-center gap-2 group">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-600 transition-colors">
-                    <LayoutDashboard className="w-4 h-4 text-indigo-600 group-hover:text-white" />
-                  </div>
-                  <span>Dashboard</span>
-                </Link>
-                <div className="h-6 w-px bg-gray-200"></div>
-                <button 
-                  onClick={handleLogout}
-                  className="bg-red-50 text-red-600 px-5 py-2.5 rounded-xl hover:bg-red-600 hover:text-white transition-all font-bold flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" /> 
-                  <span className="hidden lg:inline">Logout</span>
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-4">
-                <Link to="/login" className="text-gray-600 hover:text-indigo-600 font-bold px-4">
-                  Login
-                </Link>
-                <Link to="/register" className="bg-indigo-600 text-white px-6 py-2.5 rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 font-bold">
-                  Join Free
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button 
-              onClick={() => setIsOpen(!isOpen)} 
-              className="text-gray-600 p-2 hover:bg-gray-50 rounded-lg transition-colors"
-            >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      {/* Mobile Menu Panel */}
-      {isOpen && (
-        <div className="md:hidden bg-white border-b border-gray-100 p-6 space-y-6 animate-in slide-in-from-top duration-300">
-          <div className="space-y-4">
-            <Link 
-              to="/" 
-              className="block px-4 py-3 text-gray-600 hover:text-indigo-600 font-semibold hover:bg-indigo-50 rounded-xl transition-all" 
-              onClick={() => setIsOpen(false)}
-            >
-              Events
-            </Link>
-            <Link 
-              to="/places" 
-              className="block px-4 py-3 text-gray-600 hover:text-indigo-600 font-semibold hover:bg-indigo-50 rounded-xl transition-all" 
-              onClick={() => setIsOpen(false)}
-            >
-              Places
-            </Link>
-          </div>
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-8">
+          <Link to="/" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-gray-300 hover:text-gold-500' : 'text-emerald-900 hover:text-emerald-700'}`}>Events</Link>
+          <Link to="/places" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-gray-300 hover:text-gold-500' : 'text-emerald-900 hover:text-emerald-700'}`}>Places</Link>
           
-          <div className="pt-6 border-t border-gray-50 space-y-4">
-            {isLoggedIn ? (
-              <>
-                <Link 
-                  to="/admin" 
-                  className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-indigo-600 font-semibold hover:bg-indigo-50 rounded-xl transition-all" 
-                  onClick={() => setIsOpen(false)}
-                >
-                  <LayoutDashboard className="w-5 h-5" /> Dashboard
-                </Link>
-                <button 
-                  onClick={() => { handleLogout(); setIsOpen(false); }}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-xl transition-all"
-                >
-                  <LogOut className="w-5 h-5" /> Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link 
-                  to="/login" 
-                  className="block px-4 py-3 text-gray-600 hover:text-indigo-600 font-semibold hover:bg-indigo-50 rounded-xl transition-all" 
-                  onClick={() => setIsOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link 
-                  to="/register" 
-                  className="block w-full text-center bg-indigo-600 text-white px-5 py-4 rounded-xl font-bold shadow-lg shadow-indigo-100" 
-                  onClick={() => setIsOpen(false)}
-                >
-                  Join Free
-                </Link>
-              </>
-            )}
+          <div className="h-6 w-px bg-white/10 mx-2"></div>
+
+          {isLoggedIn ? (
+            <div className="flex items-center gap-4">
+              <Link to="/admin" className="p-2.5 bg-white/10 rounded-xl hover:bg-gold-500 group transition-all">
+                <LayoutDashboard className="w-5 h-5 text-gold-500 group-hover:text-emerald-950" />
+              </Link>
+              <button 
+                onClick={handleLogout}
+                className="bg-gold-500 text-emerald-950 px-6 py-2.5 rounded-xl font-black text-sm hover:bg-white transition-all shadow-lg shadow-gold-500/10"
+              >
+                LOGOUT
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Link to="/login" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-white' : 'text-emerald-900'}`}>
+                Login
+              </Link>
+              <Link to="/register" className="bg-heritage-gradient text-gold-500 border border-gold-500/30 px-7 py-3 rounded-2xl font-black text-sm hover:scale-105 transition-all shadow-xl">
+                JOIN EXCLUSIVE
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Toggle */}
+        <button 
+          onClick={() => setIsOpen(!isOpen)}
+          className={`md:hidden p-2 rounded-xl transition-colors ${isScrolled ? 'text-white bg-white/10' : 'text-emerald-900 bg-emerald-50'}`}
+        >
+          {isOpen ? <X /> : <Menu />}
+        </button>
+      </div>
+
+      {/* Mobile Drawer (simplified for now) */}
+      {isOpen && (
+        <div className="fixed inset-0 top-[100px] z-40 px-4 md:hidden">
+          <div className="bg-emerald-950/95 backdrop-blur-3xl rounded-[3rem] border border-white/10 p-8 shadow-2xl animate-in slide-in-from-top-4">
+            <div className="space-y-6">
+              <Link to="/" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Events</Link>
+              <Link to="/places" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Places</Link>
+              <div className="h-px bg-white/10 my-8"></div>
+              {isLoggedIn ? (
+                <button onClick={handleLogout} className="w-full bg-gold-500 text-emerald-950 py-5 rounded-2xl font-black">LOGOUT</button>
+              ) : (
+                <Link to="/register" onClick={() => setIsOpen(false)} className="block w-full text-center bg-gold-500 text-emerald-950 py-5 rounded-2xl font-black">JOIN EXCLUSIVE</Link>
+              )}
+            </div>
           </div>
         </div>
       )}
