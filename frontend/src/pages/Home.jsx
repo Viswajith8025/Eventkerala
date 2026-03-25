@@ -12,6 +12,13 @@ const Home = () => {
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({ district: '', date: '', search: '' });
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'map'
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 100);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const fetchEvents = async (queryFilters = filters) => {
     try {
@@ -48,45 +55,55 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
       {/* Editorial Hero Section */}
-      <section className="relative h-screen min-h-[800px] flex items-center overflow-hidden bg-emerald-950">
-        <div className="absolute inset-0 opacity-40">
+      <section className="relative h-screen min-h-[900px] flex items-center overflow-hidden bg-emerald-950">
+        <div className="absolute inset-0 z-0">
            <img 
              src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&q=80&w=2000" 
-             className="w-full h-full object-cover"
+             className="w-full h-full object-cover scale-105 animate-slow-zoom"
              alt="Kerala Backwaters"
            />
-           <div className="absolute inset-0 bg-gradient-to-r from-emerald-950 via-emerald-950/60 to-transparent"></div>
+           <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/80 via-transparent to-emerald-900/10"></div>
+           <div className="absolute inset-0 bg-gradient-to-r from-emerald-950 via-emerald-950/40 to-transparent"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
-          <div className="max-w-3xl space-y-10">
-            <div className="flex items-center gap-4 text-gold-500 animate-in fade-in slide-in-from-left duration-1000">
-               <div className="h-px w-12 bg-gold-500"></div>
-               <span className="text-xs font-black uppercase tracking-[0.4em]">The Grand Experience</span>
+          <div className="max-w-4xl space-y-12">
+            <div className="flex items-center gap-6 text-gold-500 animate-in fade-in slide-in-from-left duration-1000">
+               <div className="h-[2px] w-20 bg-gold-500 shadow-[0_0_15px_rgba(212,175,55,0.5)]"></div>
+               <span className="text-[10px] font-black uppercase tracking-[0.6em]">The Soul of God's Own Country</span>
             </div>
             
-            <h1 className="text-7xl md:text-9xl font-display font-medium text-white leading-[0.9] animate-in fade-in slide-in-from-left duration-1000 delay-200">
-              Where <br />
-              <span className="italic text-gold-500">Culture</span> <br />
-              Meets Life.
+             <h1 className="text-8xl md:text-[11rem] font-display font-medium text-white leading-[0.85] tracking-tighter animate-in fade-in slide-in-from-left duration-1000 delay-200">
+              Live <br />
+              <span className="italic text-gold-500 font-light pr-8">Keralam</span>
             </h1>
-            
-            <p className="text-xl text-gray-300 max-w-xl leading-relaxed italic font-light animate-in fade-in slide-in-from-left duration-1000 delay-500">
-              Curated celebrations, legendary performances, and the untold stories of God's Own Country.
-            </p>
 
-            <div className="flex items-center gap-8 pt-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-700">
-               <button onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })} className="px-10 py-5 bg-gold-500 text-emerald-950 rounded-2xl font-black text-xs tracking-widest hover:scale-105 transition-all shadow-2xl shadow-gold-500/20">
-                 EXPLORE EVENTS
-               </button>
-               <div className="flex items-center gap-3 text-gold-500/60 cursor-pointer hover:text-gold-500 transition-colors">
-                  <div className="w-12 h-12 rounded-full border border-gold-500/30 flex items-center justify-center">
-                    <ScrollText className="w-5 h-5" />
-                  </div>
-                  <span className="text-[10px] font-black tracking-widest uppercase">Scroll Stories</span>
-               </div>
+            <div className="max-w-xl space-y-8 animate-in fade-in slide-in-from-left duration-1000 delay-500">
+              <p className="text-2xl text-white/80 leading-relaxed font-light italic">
+                From the misty ghats of Wayanad to the golden sands of Varkala, discover the heart of Kerala's heritage.
+              </p>
+              
+              <div className="flex items-center gap-10 pt-4">
+                 <button onClick={() => window.scrollTo({ top: window.innerHeight - 100, behavior: 'smooth' })} className="px-12 py-6 bg-gold-500 text-emerald-950 rounded-2xl font-black text-[10px] tracking-[0.3em] hover:scale-105 transition-all shadow-2xl shadow-gold-500/30 group flex items-center gap-3">
+                   START EXPLORING <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                 </button>
+                 <div className="flex items-center gap-4 text-white/40 cursor-pointer hover:text-gold-500 transition-colors group">
+                    <div className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center group-hover:border-gold-500/50 transition-all">
+                      <ScrollText className="w-6 h-6 border-b-2 border-transparent group-hover:scale-110 transition-all" />
+                    </div>
+                    <span className="text-[10px] font-black tracking-[0.4em] uppercase">Scroll Traditions</span>
+                 </div>
+              </div>
             </div>
           </div>
+        </div>
+
+        {/* Floating Accent */}
+        <div className="absolute bottom-12 right-12 z-10 hidden xl:block animate-pulse">
+           <div className="flex flex-col items-center gap-4 text-gold-500/20">
+              <span className="[writing-mode:vertical-rl] text-[10px] font-black tracking-[1em] uppercase">Est. 2026</span>
+              <div className="w-px h-24 bg-gradient-to-b from-gold-500/20 to-transparent"></div>
+           </div>
         </div>
       </section>
 

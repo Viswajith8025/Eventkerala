@@ -28,15 +28,19 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-indigo-100/50 border border-gray-100 overflow-hidden">
+    <div className="min-h-screen bg-[#f9f6f1] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Abstract Background Elements */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-900/5 rounded-full blur-3xl -mr-48 -mt-48"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl -ml-48 -mb-48"></div>
+
+      <div className="max-w-md w-full bg-white/80 backdrop-blur-xl rounded-[3rem] shadow-2xl shadow-emerald-950/5 border border-white overflow-hidden relative z-10">
         <div className="p-8 md:p-12">
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl mb-4">
-              <LogIn className="w-8 h-8" />
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-emerald-50 text-emerald-900 rounded-[2rem] mb-6 ring-8 ring-emerald-50/50">
+              <LogIn className="w-10 h-10" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-            <p className="text-gray-500 mt-2">Sign in to manage your events in Kerala</p>
+            <h1 className="text-4xl font-display font-black text-emerald-950">Welcome Back</h1>
+            <p className="text-emerald-900/60 mt-3 font-medium italic">Sign in to the LiveKeralam experience</p>
           </div>
 
           {error && (
@@ -50,12 +54,12 @@ const Login = () => {
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700 ml-1">Email Address</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors w-5 h-5" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-900/30 group-focus-within:text-emerald-950 transition-colors w-5 h-5" />
                 <input
                   type="email"
                   required
-                  className="w-full bg-gray-50 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 rounded-2xl py-3.5 pl-12 pr-4 transition-all text-gray-700"
-                  placeholder="admin@eventkerala.in"
+                  className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-3.5 pl-12 pr-4 transition-all text-emerald-950 font-medium"
+                  placeholder="admin@livekeralam.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
@@ -63,13 +67,13 @@ const Login = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Password</label>
+              <label className="text-sm font-semibold text-emerald-950/70 ml-1">Password</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors w-5 h-5" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-900/30 group-focus-within:text-emerald-950 transition-colors w-5 h-5" />
                 <input
                   type="password"
                   required
-                  className="w-full bg-gray-50 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 rounded-2xl py-3.5 pl-12 pr-4 transition-all text-gray-700"
+                  className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-3.5 pl-12 pr-4 transition-all text-emerald-950 font-medium"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -80,16 +84,16 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-indigo-200 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
+              className="w-full bg-heritage-gradient text-gold-500 font-black py-4 rounded-2xl transition-all shadow-xl shadow-emerald-950/10 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 mt-4 hover:scale-[1.02]"
             >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'ENTER EXPERIENCE'}
             </button>
           </form>
 
-          <p className="text-center text-gray-500 mt-8 text-sm">
+          <p className="text-center text-emerald-900/50 mt-8 text-sm font-medium">
             Don't have an account?{' '}
-            <Link to="/register" className="text-indigo-600 font-bold hover:underline">
-              Register now
+            <Link to="/register" className="text-emerald-950 font-black hover:text-gold-600 transition-colors">
+              Request Access
             </Link>
           </p>
         </div>

@@ -27,15 +27,19 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 py-20">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-indigo-100/50 border border-gray-100 overflow-hidden">
+    <div className="min-h-screen bg-[#f9f6f1] flex items-center justify-center p-4 py-20 relative overflow-hidden">
+      {/* Abstract Background Elements */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-900/5 rounded-full blur-3xl -mr-48 -mt-48"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl -ml-48 -mb-48"></div>
+
+      <div className="max-w-md w-full bg-white/80 backdrop-blur-xl rounded-[3rem] shadow-2xl shadow-emerald-950/5 border border-white overflow-hidden relative z-10">
         <div className="p-8 md:p-12">
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl mb-4">
-              <UserPlus className="w-8 h-8" />
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gold-50 text-gold-600 rounded-[2rem] mb-6 ring-8 ring-gold-50/50">
+              <UserPlus className="w-10 h-10" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">Join EventKerala</h1>
-            <p className="text-gray-500 mt-2">Discover and manage events across Kerala</p>
+            <h1 className="text-4xl font-display font-black text-emerald-950">Join LiveKeralam</h1>
+            <p className="text-emerald-900/60 mt-3 font-medium italic">Discover and manage heritage events</p>
           </div>
 
           {error && (
@@ -47,14 +51,14 @@ const Register = () => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Full Name</label>
+              <label className="text-sm font-semibold text-emerald-950/70 ml-1">Full Name</label>
               <div className="relative group">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors w-5 h-5" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-900/30 group-focus-within:text-emerald-950 transition-colors w-5 h-5" />
                 <input
                   type="text"
                   required
-                  className="w-full bg-gray-50 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 rounded-2xl py-3.5 pl-12 pr-4 transition-all text-gray-700"
-                  placeholder="John Doe"
+                  className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-3.5 pl-12 pr-4 transition-all text-emerald-950 font-medium"
+                  placeholder="Aravind Nair"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 />
@@ -62,14 +66,14 @@ const Register = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Email Address</label>
+              <label className="text-sm font-semibold text-emerald-950/70 ml-1">Email Address</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors w-5 h-5" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-900/30 group-focus-within:text-emerald-950 transition-colors w-5 h-5" />
                 <input
                   type="email"
                   required
-                  className="w-full bg-gray-50 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 rounded-2xl py-3.5 pl-12 pr-4 transition-all text-gray-700"
-                  placeholder="john@example.com"
+                  className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-3.5 pl-12 pr-4 transition-all text-emerald-950 font-medium"
+                  placeholder="aravind@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
@@ -77,13 +81,13 @@ const Register = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Password</label>
+              <label className="text-sm font-semibold text-emerald-950/70 ml-1">Password</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-600 transition-colors w-5 h-5" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-900/30 group-focus-within:text-emerald-950 transition-colors w-5 h-5" />
                 <input
                   type="password"
                   required
-                  className="w-full bg-gray-50 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 rounded-2xl py-3.5 pl-12 pr-4 transition-all text-gray-700"
+                  className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-3.5 pl-12 pr-4 transition-all text-emerald-950 font-medium"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -92,48 +96,48 @@ const Register = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700 ml-1">Account Type</label>
+              <label className="text-sm font-semibold text-emerald-950/70 ml-1">Account Type</label>
               <div className="flex gap-4">
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, role: 'user' })}
-                  className={`flex-1 py-3 rounded-2xl border-2 transition-all font-semibold flex items-center justify-center gap-2 ${
+                  className={`flex-1 py-4 rounded-2xl border-2 transition-all font-black text-xs tracking-widest flex items-center justify-center gap-2 ${
                     formData.role === 'user' 
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-600' 
-                      : 'border-gray-100 bg-gray-50 text-gray-500 hover:bg-gray-100'
+                      ? 'border-emerald-900 bg-emerald-900 text-gold-500 shadow-xl shadow-emerald-950/20' 
+                      : 'border-emerald-900/5 bg-emerald-900/5 text-emerald-950/40 hover:bg-emerald-900/10'
                   }`}
                 >
-                  <User className="w-4 h-4" /> User
+                  <User size={14} /> EXPLORER
                 </button>
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, role: 'admin' })}
-                  className={`flex-1 py-3 rounded-2xl border-2 transition-all font-semibold flex items-center justify-center gap-2 ${
+                  className={`flex-1 py-4 rounded-2xl border-2 transition-all font-black text-xs tracking-widest flex items-center justify-center gap-2 ${
                     formData.role === 'admin' 
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-600' 
-                      : 'border-gray-100 bg-gray-50 text-gray-500 hover:bg-gray-100'
+                      ? 'border-emerald-900 bg-emerald-900 text-gold-500 shadow-xl shadow-emerald-950/20' 
+                      : 'border-emerald-900/5 bg-emerald-900/5 text-emerald-950/40 hover:bg-emerald-900/10'
                   }`}
                 >
-                  <ShieldCheck className="w-4 h-4" /> Admin
+                  <ShieldCheck size={14} /> ORGANIZER
                 </button>
               </div>
-              <p className="text-[10px] text-gray-400 text-center mt-2 px-4">
-                * Note: In production, Admin registration would be restricted.
+              <p className="text-[10px] text-emerald-900/30 text-center mt-3 px-4 font-medium uppercase tracking-tighter">
+                * Note: Admin privileges are subject to heritage verification.
               </p>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-indigo-200 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
+              className="w-full bg-heritage-gradient text-gold-500 font-black py-5 rounded-2xl transition-all shadow-xl shadow-emerald-950/10 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 mt-4 hover:scale-[1.02]"
             >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Create Account'}
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'CREATE MY ACCOUNT'}
             </button>
           </form>
 
-          <p className="text-center text-gray-500 mt-8 text-sm">
-            Already have an account?{' '}
-            <Link to="/login" className="text-indigo-600 font-bold hover:underline">
+          <p className="text-center text-emerald-900/50 mt-10 text-sm font-medium">
+            Already a member?{' '}
+            <Link to="/login" className="text-emerald-950 font-black hover:text-gold-600 transition-colors">
               Sign In
             </Link>
           </p>

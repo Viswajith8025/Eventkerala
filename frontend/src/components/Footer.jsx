@@ -1,22 +1,23 @@
 import React from 'react';
 import { Calendar, Globe, Share2, Send, Mail, MapPin, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import logo from '../assets/logo.png';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white pt-20 pb-10">
+    <footer className="bg-emerald-950 text-white pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-gray-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-emerald-900/20">
           {/* Brand Section */}
           <div className="space-y-6">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="bg-indigo-600 p-2 rounded-lg">
-                <Calendar className="text-white w-6 h-6" />
+            <Link to="/" className="flex items-center gap-3">
+              <div className="bg-heritage-gradient p-1.5 rounded-xl w-10 h-10 flex items-center justify-center overflow-hidden ring-1 ring-white/10">
+                <img src={logo} alt="LiveKeralam Logo" className="w-full h-full object-contain" />
               </div>
-              <span className="text-2xl font-bold tracking-tight">EventKerala</span>
+              <span className="text-2xl font-display font-bold tracking-tight">Live<span className="text-gold-500 italic">Keralam</span></span>
             </Link>
-            <p className="text-gray-400 leading-relaxed">
-              Your gateway to discovering the vibrant culture, festivals, and hidden gems of God's Own Country.
+            <p className="text-gray-400 leading-relaxed font-light italic">
+              Experience the soul of God's Own Country through curated celebrations and legendary traditions.
             </p>
             <div className="flex gap-4">
               <a href="#" className="p-2 bg-gray-800 rounded-lg hover:bg-indigo-600 transition-colors">
@@ -58,26 +59,26 @@ const Footer = () => {
             <h4 className="text-lg font-bold mb-6">Contact Us</h4>
             <ul className="space-y-4 text-gray-400">
               <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-indigo-500 mt-1 flex-shrink-0" />
+                <MapPin className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
                 <span>Thiruvananthapuram, Kerala, India</span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-indigo-500 flex-shrink-0" />
+                <Phone className="w-5 h-5 text-gold-500 flex-shrink-0" />
                 <span>+91 471 2345678</span>
               </li>
               <li className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-indigo-500 flex-shrink-0" />
-                <span>info@eventkerala.in</span>
+                <Mail className="w-5 h-5 text-gold-500 flex-shrink-0" />
+                <span>hello@livekeralam.com</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="pt-10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
-          <p>© 2026 EventKerala. All rights reserved.</p>
+          <p>© 2026 LiveKeralam. All rights reserved.</p>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-white">Privacy Policy</a>
-            <a href="#" className="hover:text-white">Terms of Service</a>
+            <a href="#" className="hover:text-white border-b border-transparent hover:border-white transition-all">Privacy Policy</a>
+            <a href="#" className="hover:text-white border-b border-transparent hover:border-white transition-all">Terms of Service</a>
           </div>
         </div>
       </div>

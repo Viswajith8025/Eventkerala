@@ -38,11 +38,9 @@ const EventCard = ({ event }) => {
 
         {/* Content */}
         <div className="space-y-4 px-2">
-          <div className="flex items-center gap-3">
-             <div className="h-px flex-grow bg-gold-500/30"></div>
-             <span className="text-[10px] font-bold text-gold-600 uppercase tracking-widest">{event.category}</span>
-             <div className="h-px flex-grow bg-gold-500/30"></div>
-          </div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-[#d4af37] bg-emerald-950 px-3 py-1 rounded-full group-hover:bg-[#d4af37] group-hover:text-emerald-950 transition-colors">
+                    {event.category}
+                  </span>
           
           <h3 className="text-3xl font-display font-bold text-emerald-950 leading-[1.1] group-hover:text-gold-600 transition-colors">
             {event.title}
