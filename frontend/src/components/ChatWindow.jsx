@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import { Send, User as UserIcon, Loader2 } from 'lucide-react';
 import api from '../services/api';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
 
 const ChatWindow = ({ eventId, eventTitle }) => {
   const [messages, setMessages] = useState([]);
@@ -11,7 +11,7 @@ const ChatWindow = ({ eventId, eventTitle }) => {
   const [loading, setLoading] = useState(true);
   const socketRef = useRef();
   const messagesEndRef = useRef(null);
-  
+
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const token = localStorage.getItem('token');
 
@@ -36,7 +36,7 @@ const ChatWindow = ({ eventId, eventTitle }) => {
 
     // Initialize Socket
     socketRef.current = io(API_URL.replace('/api/v1', ''));
-    
+
     socketRef.current.emit('join_room', eventId);
 
     socketRef.current.on('receive_message', (data) => {
@@ -111,8 +111,8 @@ const ChatWindow = ({ eventId, eventTitle }) => {
           </div>
         ) : (
           messages.map((msg, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`flex flex-col ${msg.senderName === user.name ? 'items-end' : 'items-start'}`}
             >
               <div className="flex items-center gap-2 mb-1">
@@ -120,11 +120,10 @@ const ChatWindow = ({ eventId, eventTitle }) => {
                   {msg.senderName}
                 </span>
               </div>
-              <div className={`px-4 py-2.5 rounded-2xl max-w-[80%] text-sm font-medium shadow-sm ${
-                msg.senderName === user.name 
-                  ? 'bg-indigo-600 text-white rounded-tr-none' 
+              <div className={`px-4 py-2.5 rounded-2xl max-w-[80%] text-sm font-medium shadow-sm ${msg.senderName === user.name
+                  ? 'bg-indigo-600 text-white rounded-tr-none'
                   : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
-              }`}>
+                }`}>
                 {msg.content}
               </div>
               <span className="text-[8px] text-gray-400 mt-1">
@@ -139,14 +138,14 @@ const ChatWindow = ({ eventId, eventTitle }) => {
       {/* Input area */}
       <form onSubmit={handleSendMessage} className="p-6 border-t border-gray-100 bg-white">
         <div className="relative flex items-center">
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Type your message..."
             className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 pr-16 text-sm font-medium focus:ring-2 focus:ring-indigo-100 transition-all"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
           />
-          <button 
+          <button
             type="submit"
             className="absolute right-2 p-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
           >

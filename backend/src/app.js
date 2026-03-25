@@ -13,11 +13,28 @@ const uploadRoutes = require('./routes/uploadRoutes');
 
 const app = express();
 
+// Root route for Render/Production health check
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    message: 'LiveKeralam API is live',
+    version: '1.0.0',
+    endpoints: {
+      events: '/api/v1/events',
+      places: '/api/v1/places',
+      auth: '/api/v1/auth'
+    }
+  });
+});
+
 // Middlewares
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
-  credentials: true
+  origin: [process.env.FRONTEND_URL, 'https://eventkeralamm.vercel.app', 'http://localhost:5173'].filter(Boolean),
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 app.use(morgan('dev'));
 app.use(express.json());
@@ -32,16 +49,16 @@ app.use('/api/v1/upload', uploadRoutes);
 
 // Routes
 app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'OK', message: 'EventKerala API is running' });
+  res.status(200).json({ status: 'OK', message: 'EventKerala API is running' });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-    res.status(statusCode).json({
-        message: err.message,
-        stack: process.env.NODE_ENV === 'production' ? null : err.stack,
-    });
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  res.status(statusCode).json({
+    message: err.message,
+    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+  });
 });
 
 module.exports = app;
