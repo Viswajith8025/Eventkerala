@@ -1,7 +1,39 @@
-import React from 'react';
-import { Mail, Phone, MapPin, Send, MessageCircle, Globe, Share2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Send, MessageCircle, Globe, Share2, Loader2 } from 'lucide-react';
+import api from '../services/api';
+import toast from 'react-hot-toast';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: 'General Inquiry',
+    message: ''
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      await api.post('/contact', formData);
+      toast.success('Message sent successfully! Our team will contact you shortly.', {
+        duration: 5000,
+        position: 'bottom-center',
+        style: {
+          background: '#064e3b',
+          color: '#fff',
+          borderRadius: '20px',
+          fontWeight: 'bold'
+        }
+      });
+      setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
+    } catch (err) {
+      toast.error('Failed to send message. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="min-h-screen bg-[#F9F6F1] pt-32">
       <div className="max-w-7xl mx-auto px-6 py-24 relative">
@@ -76,35 +108,61 @@ const Contact = () => {
             {/* Background Accent */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-900/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
 
-            <form className="space-y-8 relative z-10">
+            <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-1">Full Name</label>
-                  <input type="text" className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-4 px-6 transition-all text-emerald-950 font-medium" placeholder="Aromal S." />
+                  <input 
+                    type="text" required
+                    className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-4 px-6 transition-all text-emerald-950 font-medium" 
+                    placeholder="Aromal S." 
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-1">Email</label>
-                  <input type="email" className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-4 px-6 transition-all text-emerald-950 font-medium" placeholder="aromal@example.com" />
+                  <input 
+                    type="email" required
+                    className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-4 px-6 transition-all text-emerald-950 font-medium" 
+                    placeholder="aromal@example.com" 
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-1">Subject</label>
-                <select className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-4 px-6 transition-all text-emerald-950 font-medium appearance-none">
-                  <option>Plan a Trip</option>
-                  <option>Partner with Us</option>
-                  <option>Publish an Event</option>
-                  <option>General Inquiry</option>
+                <select 
+                  className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-4 px-6 transition-all text-emerald-950 font-medium appearance-none"
+                  value={formData.subject}
+                  onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                >
+                  <option value="Plan a Trip">Plan a Trip</option>
+                  <option value="Partner with Us">Partner with Us</option>
+                  <option value="Publish an Event">Publish an Event</option>
+                  <option value="General Inquiry">General Inquiry</option>
                 </select>
               </div>
 
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-1">Message</label>
-                <textarea rows="5" className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-[2rem] py-4 px-6 transition-all text-emerald-950 font-medium resize-none" placeholder="Tell us more about your request..."></textarea>
+                <textarea 
+                  rows="5" required
+                  className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-[2rem] py-4 px-6 transition-all text-emerald-950 font-medium resize-none" 
+                  placeholder="Tell us more about your request..."
+                  value={formData.message}
+                  onChange={(e) => setFormData({...formData, message: e.target.value})}
+                ></textarea>
               </div>
 
-              <button type="submit" className="w-full bg-heritage-gradient text-gold-500 font-black py-6 rounded-[2rem] transition-all shadow-xl shadow-emerald-950/20 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 mt-10">
-                SEND MESSAGE <Send className="w-5 h-5" />
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="w-full bg-heritage-gradient text-gold-500 font-black py-6 rounded-[2rem] transition-all shadow-xl shadow-emerald-950/20 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 mt-10 disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <>SEND MESSAGE <Send className="w-5 h-5" /></>}
               </button>
             </form>
           </div>

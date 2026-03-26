@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { 
   CheckCircle, XCircle, Clock, LayoutDashboard, Settings, 
-  Users, Calendar, Plus, X, Search, Filter, Trash2, AlertCircle, MapPin, MessageSquare
+  Users, Calendar, Plus, X, Search, Filter, Trash2, AlertCircle, MapPin, MessageSquare, Send
 } from 'lucide-react';
 import api from '../services/api';
 import ImageUpload from '../components/ImageUpload';
@@ -12,6 +12,8 @@ const AdminDashboard = () => {
   const [events, setEvents] = useState([]);
   const [places, setPlaces] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [contactMessages, setContactMessages] = useState([]);
+  const [activeMessageSubTab, setActiveMessageSubTab] = useState('eventChat');
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showAddPlaceModal, setShowAddPlaceModal] = useState(false);
@@ -60,7 +62,19 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error('Messages fetch error:', err);
     } finally {
-      if (activeTab === 'messages') setLoading(false);
+      if (activeTab === 'messages' && activeMessageSubTab === 'eventChat') setLoading(false);
+    }
+  };
+
+  const fetchContactMessages = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get('/contact');
+      setContactMessages(response.data.data || []);
+    } catch (err) {
+      console.error('Contact fetch error:', err);
+    } finally {
+      if (activeTab === 'messages' && activeMessageSubTab === 'inquiries') setLoading(false);
     }
   };
 
@@ -70,9 +84,13 @@ const AdminDashboard = () => {
     } else if (activeTab === 'places') {
       fetchPlaces();
     } else if (activeTab === 'messages') {
-      fetchMessages();
+      if (activeMessageSubTab === 'eventChat') {
+        fetchMessages();
+      } else {
+        fetchContactMessages();
+      }
     }
-  }, [activeTab]);
+  }, [activeTab, activeMessageSubTab]);
 
   const handleStatusUpdate = async (id, status) => {
     try {
@@ -110,8 +128,10 @@ const AdminDashboard = () => {
       setEvents([response.data.data, ...events]);
       setShowAddModal(false);
       setFormData({ title: '', description: '', district: '', date: '', location: '', image: '', latitude: '', longitude: '' });
+      alert('Event published successfully!');
     } catch (err) {
-      alert('Failed to create event.');
+      const errorMsg = err.response?.data?.message || 'Failed to create event. Please check formatting and minimum lengths (Title 5+, Description 20+).';
+      alert(errorMsg);
     }
   };
 
@@ -126,7 +146,8 @@ const AdminDashboard = () => {
       setPlaceFormData({ name: '', district: '', description: '', image: '', category: 'other' });
       alert('Place added successfully!');
     } catch (err) {
-      alert('Failed to create place.');
+      const errorMsg = err.response?.data?.message || 'Failed to create place. Please check formatting and minimum lengths (Name 3+, Description 10+).';
+      alert(errorMsg);
     }
   };
 
@@ -141,15 +162,11 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleReplyMessage = async (eventId, content) => {
+  const handleReplyContact = async (id, reply) => {
     try {
-      await api.post('/messages', {
-        event: eventId,
-        content: content,
-        senderName: 'Admin (Verified)'
-      });
-      fetchMessages();
-      alert('Reply sent successfully!');
+      await api.put(`/contact/${id}/reply`, { reply });
+      fetchContactMessages();
+      alert('Reply sent to user inquiry!');
     } catch (err) {
       alert('Failed to send reply.');
     }
@@ -202,9 +219,31 @@ const AdminDashboard = () => {
                   activeTab === 'messages' ? 'bg-indigo-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-900'
                 }`}
               >
-                <MessageSquare className="w-4 h-4" /> Messages
+                <MessageSquare className="w-4 h-4" /> Inbox
               </button>
             </div>
+            
+            {/* Sub-tabs for Messages */}
+            {activeTab === 'messages' && (
+              <div className="flex items-center gap-4 mt-4">
+                <button 
+                  onClick={() => setActiveMessageSubTab('eventChat')}
+                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                    activeMessageSubTab === 'eventChat' ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' : 'text-gray-400'
+                  }`}
+                >
+                  Event Chats
+                </button>
+                <button 
+                  onClick={() => setActiveMessageSubTab('inquiries')}
+                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                    activeMessageSubTab === 'inquiries' ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' : 'text-gray-400'
+                  }`}
+                >
+                  Contact Inquiries
+                </button>
+              </div>
+            )}
           </div>
           
           <div className="flex flex-wrap items-center gap-4">
@@ -565,7 +604,7 @@ const AdminDashboard = () => {
                   ))}
                 </tbody>
               </table>
-            ) : (
+            ) : activeMessageSubTab === 'eventChat' ? (
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-gray-50/50 border-b border-gray-100">
@@ -577,26 +616,26 @@ const AdminDashboard = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {messages.filter(m => 
-                    m.senderName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                    m.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    m.event?.title.toLowerCase().includes(searchTerm.toLowerCase())
+                    (m.senderName || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    (m.content || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (m.event?.title || '').toLowerCase().includes(searchTerm.toLowerCase())
                   ).map((message) => (
                     <tr key={message._id} className="hover:bg-indigo-50/30 transition-all group">
                       <td className="px-10 py-8">
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black ${
-                            message.senderName.includes('Admin') ? 'bg-amber-100 text-amber-600 ring-2 ring-amber-500/20' : 'bg-indigo-100 text-indigo-600'
+                            (message.senderName || '').includes('Admin') ? 'bg-amber-100 text-amber-600 ring-2 ring-amber-500/20' : 'bg-indigo-100 text-indigo-600'
                           }`}>
-                            {message.senderName[0].toUpperCase()}
+                            {(message.senderName || 'A')[0].toUpperCase()}
                           </div>
                           <div>
-                            <span className="font-black text-gray-900 block">{message.senderName}</span>
-                            {message.senderName.includes('Admin') && <span className="text-[8px] bg-amber-500 text-white px-1.5 py-0.5 rounded-full uppercase tracking-widest font-black">Official</span>}
+                            <span className="font-black text-gray-900 block">{message.senderName || 'Anonymous'}</span>
+                            {(message.senderName || '').includes('Admin') && <span className="text-[8px] bg-amber-500 text-white px-1.5 py-0.5 rounded-full uppercase tracking-widest font-black">Official</span>}
                           </div>
                         </div>
                       </td>
                       <td className="px-10 py-8">
-                        <span className="font-bold text-gray-600 text-sm">{message.event?.title || 'Unknown Event'}</span>
+                        <span className="font-bold text-gray-600 text-sm">{message.event?.title || 'Closed Event'}</span>
                       </td>
                       <td className="px-10 py-8">
                         <div className="space-y-4">
@@ -609,7 +648,7 @@ const AdminDashboard = () => {
                               }}
                               className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-100/50 flex items-center gap-2"
                             >
-                              <Send className="w-3 h-3" /> Quick Reply
+                              <Plus className="w-3 h-3" /> Quick Reply
                             </button>
                           </div>
                         </div>
@@ -623,9 +662,69 @@ const AdminDashboard = () => {
                   ))}
                 </tbody>
               </table>
+            ) : (
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-50/50 border-b border-gray-100">
+                    <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Inquirer</th>
+                    <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Subject</th>
+                    <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Requirement</th>
+                    <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {contactMessages.filter(m => 
+                    (m.name || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    (m.subject || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (m.message || '').toLowerCase().includes(searchTerm.toLowerCase())
+                  ).map((contact) => (
+                    <tr key={contact._id} className="hover:bg-indigo-50/30 transition-all group">
+                      <td className="px-10 py-8">
+                        <div>
+                          <p className="font-black text-gray-900">{contact.name}</p>
+                          <p className="text-[10px] text-gray-400 font-medium">{contact.email}</p>
+                        </div>
+                      </td>
+                      <td className="px-10 py-8">
+                        <span className="font-bold text-gray-600 text-sm">{contact.subject}</span>
+                      </td>
+                      <td className="px-10 py-8">
+                        <div className="space-y-4">
+                          <p className="text-sm text-gray-500 font-medium leading-relaxed max-w-md">{contact.message}</p>
+                          {contact.adminReply && (
+                            <div className="bg-amber-50 p-3 rounded-xl border border-amber-100">
+                              <p className="text-[8px] font-black text-amber-600 uppercase mb-1">Your Reply</p>
+                              <p className="text-xs text-amber-900 font-medium">{contact.adminReply}</p>
+                            </div>
+                          )}
+                          <div className="opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                            <button 
+                              onClick={() => {
+                                const reply = prompt(`Reply to ${contact.name} (${contact.email}):`);
+                                if (reply) handleReplyContact(contact._id, reply);
+                              }}
+                              className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-100/50 flex items-center gap-2"
+                            >
+                              <Plus className="w-3 h-3" /> Send Inquiry Reply
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-10 py-8 text-right">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
+                          contact.status === 'replied' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                        }`}>
+                          {contact.status}
+                        </span>
+                        <p className="text-[8px] text-gray-300 mt-2">{new Date(contact.createdAt).toLocaleDateString()}</p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )}
             
-            {((activeTab === 'events' && filteredEvents.length === 0) || (activeTab === 'places' && places.length === 0) || (activeTab === 'messages' && messages.length === 0)) && !loading && (
+            {((activeTab === 'events' && filteredEvents.length === 0) || (activeTab === 'places' && places.length === 0) || (activeTab === 'messages' && activeMessageSubTab === 'eventChat' && messages.length === 0) || (activeTab === 'messages' && activeMessageSubTab === 'inquiries' && contactMessages.length === 0)) && !loading && (
               <div className="py-32 flex flex-col items-center justify-center text-center space-y-4">
                 <AlertCircle className="w-16 h-16 text-gray-200" />
                 <p className="text-gray-400 font-bold font-display text-xl">No {activeTab} discovered matching your search.</p>
