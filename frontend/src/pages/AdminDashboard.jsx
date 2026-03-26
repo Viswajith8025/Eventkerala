@@ -13,7 +13,7 @@ const AdminDashboard = () => {
   const [places, setPlaces] = useState([]);
   const [messages, setMessages] = useState([]);
   const [contactMessages, setContactMessages] = useState([]);
-  const [activeMessageSubTab, setActiveMessageSubTab] = useState('eventChat');
+  const [activeMessageSubTab, setActiveMessageSubTab] = useState('chats');
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showAddPlaceModal, setShowAddPlaceModal] = useState(false);
@@ -62,7 +62,7 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error('Messages fetch error:', err);
     } finally {
-      if (activeTab === 'messages' && activeMessageSubTab === 'eventChat') setLoading(false);
+      if (activeTab === 'messages' && activeMessageSubTab === 'chats') setLoading(false);
     }
   };
 
@@ -84,7 +84,7 @@ const AdminDashboard = () => {
     } else if (activeTab === 'places') {
       fetchPlaces();
     } else if (activeTab === 'messages') {
-      if (activeMessageSubTab === 'eventChat') {
+      if (activeMessageSubTab === 'chats') {
         fetchMessages();
       } else {
         fetchContactMessages();
@@ -227,9 +227,9 @@ const AdminDashboard = () => {
             {activeTab === 'messages' && (
               <div className="flex items-center gap-4 mt-4">
                 <button 
-                  onClick={() => setActiveMessageSubTab('eventChat')}
+                  onClick={() => setActiveMessageSubTab('chats')}
                   className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                    activeMessageSubTab === 'eventChat' ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' : 'text-gray-400'
+                    activeMessageSubTab === 'chats' ? 'bg-indigo-50 text-indigo-600 border border-indigo-100' : 'text-gray-400'
                   }`}
                 >
                   Event Chats

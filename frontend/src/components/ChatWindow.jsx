@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import { Send, User as UserIcon, Loader2 } from 'lucide-react';
 import api from '../services/api';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://eventkerala-backend-sfup.onrender.com/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
 
 const ChatWindow = ({ eventId, eventTitle }) => {
   const [messages, setMessages] = useState([]);

@@ -30,7 +30,9 @@ const Contact = () => {
       });
       setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
     } catch (err) {
-      toast.error('Failed to send message. Please try again later.');
+      console.error('Submission error:', err.response?.data || err.message);
+      const errorDetail = err.response?.data?.error || err.message;
+      toast.error(`Failed to send: ${errorDetail}`);
     } finally {
       setLoading(false);
     }
