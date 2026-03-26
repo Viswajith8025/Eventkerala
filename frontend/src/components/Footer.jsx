@@ -1,7 +1,6 @@
 import React from 'react';
 import { Calendar, Globe, Share2, Send, Mail, MapPin, Phone, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
 
 const Footer = () => {
   return (
@@ -12,7 +11,7 @@ const Footer = () => {
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-3">
               <div className="bg-heritage-gradient p-1.5 rounded-xl w-10 h-10 flex items-center justify-center overflow-hidden ring-1 ring-white/10">
-                <img src={logo} alt="LiveKeralam Logo" className="w-full h-full object-contain" />
+                <img src="/logolivekeralam.png" alt="LiveKeralam Logo" className="w-full h-full object-contain" />
               </div>
               <span className="text-2xl font-display font-bold tracking-tight">Live<span className="text-gold-500 italic">Keralam</span></span>
               <span className="text-[8px] bg-emerald-900/40 px-2 py-0.5 rounded text-white/50 font-mono">v1.0.2-prod</span>

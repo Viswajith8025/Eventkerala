@@ -23,4 +23,17 @@ api.interceptors.request.use(
   }
 );
 
+// Get the base backend URL (without /api/v1)
+export const IMAGE_BASE_URL = api.defaults.baseURL.replace('/api/v1', '');
+
+/**
+ * Helper to get full image URL, handling both local paths and external URLs
+ */
+export const getImageUrl = (path) => {
+  if (!path) return '/placeholder.jpg';
+  if (path.startsWith('http')) return path;
+  // Prepend backend URL for relative paths (like /uploads/local/...)
+  return `${IMAGE_BASE_URL}${path}`;
+};
+
 export default api;

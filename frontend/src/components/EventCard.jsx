@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, MapPin, ArrowRight, Sparkles } from 'lucide-react';
+import { MapPin, ArrowRight, Sparkles } from 'lucide-react';
 import HeartButton from './HeartButton';
+import { getImageUrl } from '../services/api';
 
 const EventCard = ({ event }) => {
   const date = new Date(event.date);
@@ -20,7 +21,7 @@ const EventCard = ({ event }) => {
         {/* Image Container with Gold Accent */}
         <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] mb-8 ring-1 ring-emerald-900/10">
           <img 
-            src={event.image} 
+            src={getImageUrl(event.image)} 
             alt={event.title}
             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000" 
           />

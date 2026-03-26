@@ -2,6 +2,7 @@ import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { getImageUrl } from '../services/api';
 
 // Fix for default marker icons in Leaflet with React
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -15,7 +16,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-// Component to handle map centering when events change
 const RecenterMap = ({ center }) => {
   const map = useMap();
   React.useEffect(() => {
@@ -54,7 +54,7 @@ const EventMap = ({ events, height = '500px' }) => {
             <Popup className="custom-popup">
               <div className="p-2 max-w-[200px]">
                 <img 
-                  src={event.image} 
+                  src={getImageUrl(event.image)} 
                   alt={event.title} 
                   className="w-full h-24 object-cover rounded-xl mb-2" 
                 />

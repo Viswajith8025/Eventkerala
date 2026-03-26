@@ -14,7 +14,7 @@ const events = [
     location: "Bolgatty Palace Grounds, Kochi",
     district: "Ernakulam",
     category: "Culture",
-    image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&q=80&w=1000",
+    image: "/uploads/local/hanan.jpg",
     price: 1500,
     organizer: "HananSha Official",
     status: "approved"
@@ -26,7 +26,7 @@ const events = [
     location: "Nishagandhi Auditorium, Trivandrum",
     district: "Thiruvananthapuram",
     category: "Other",
-    image: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=1000",
+    image: "/uploads/local/vedan.jpg",
     price: 800,
     organizer: "StreetVoice Entertainment",
     status: "approved"
@@ -62,21 +62,21 @@ const places = [
     name: "Sree Padmanabhaswamy Temple",
     district: "Thiruvananthapuram",
     category: "Temple",
-    image: "https://images.unsplash.com/photo-1622321457187-5114757530c8?auto=format&fit=crop&q=80&w=2000",
+    image: "/uploads/local/padmanabhaswamy.jpg",
     description: "One of the 108 Divya Desams, the temple is a stunning example of the Chera style and Dravidian style of architecture, famous for its hidden vaults and intricate stone carvings."
   },
   {
     name: "Kozhikode Beach",
     district: "Kozhikode",
     category: "Beach",
-    image: "https://images.unsplash.com/photo-1590766940554-634a7ed41450?auto=format&fit=crop&q=80&w=2000",
+    image: "/uploads/local/kozhikode-beach.jpg",
     description: "A historic beach on the Malabar Coast, known for its old-world charm, signature lighthouse, and the hundred-year-old piers that extend into the Arabian Sea."
   },
   {
     name: "Fort Kochi",
     district: "Ernakulam",
     category: "Heritage",
-    image: "https://images.unsplash.com/photo-1593694466041-8f0261f27ad6?auto=format&fit=crop&q=80&w=2000",
+    image: "/uploads/local/fortkochi.jpg",
     description: "A charming seaside area where history whispers through Chinese fishing nets, colonial-era architecture, and the vibrant art scene of the Mattancherry Palace."
   }
 ];
@@ -84,15 +84,15 @@ const places = [
 const seedData = async () => {
   try {
     await connectDB();
-    
+
     // Clear existing data
     await Event.deleteMany();
     await Place.deleteMany();
-    
+
     // Insert new data
     await Event.insertMany(events);
     await Place.insertMany(places);
-    
+
     console.log('Database Seeded Successfully with HD Heritage Visuals! 🌴🌟');
     process.exit(0);
   } catch (error) {

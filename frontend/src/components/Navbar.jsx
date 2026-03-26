@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, MapPin, Calendar, Heart, Menu, X, LogOut, LayoutDashboard, Sparkles } from 'lucide-react';
 import { useWishlist } from '../context/WishlistContext';
-import logo from '../assets/logo.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +35,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 group">
           <div className="bg-heritage-gradient p-1.5 rounded-2xl shadow-lg ring-1 ring-white/20 group-hover:scale-110 transition-transform overflow-hidden w-11 h-11 flex items-center justify-center">
-            <img src={logo} alt="LiveKeralam Logo" className="w-full h-full object-contain" />
+            <img src="/logolivekeralam.png" alt="LiveKeralam Logo" className="w-full h-full object-contain" />
           </div>
           <span className={`text-2xl font-display font-black tracking-tight ${isScrolled ? 'text-white' : 'text-emerald-900'}`}>
             Live<span className="text-gold-500 italic">Keralam</span>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MapPin, Loader2, Compass, Sparkles, Footprints, ArrowRight } from 'lucide-react';
-import api from '../services/api';
+import api, { getImageUrl } from '../services/api';
 import { PlaceCardSkeleton } from '../components/Skeleton';
 import HeartButton from '../components/HeartButton';
 import { Helmet } from 'react-helmet-async';
@@ -72,7 +72,7 @@ const Places = () => {
                 <div className="relative bg-white border border-emerald-900/5 rounded-[3.5rem] overflow-hidden shadow-2xl shadow-emerald-900/5 p-4 hover:shadow-gold-500/10 transition-all duration-700">
                   <div className="aspect-[4/5] overflow-hidden rounded-[2.5rem] relative ring-1 ring-emerald-900/10">
                     <img 
-                      src={place.image} 
+                      src={getImageUrl(place.image)} 
                       alt={place.name} 
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     />

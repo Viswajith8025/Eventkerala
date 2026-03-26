@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, MapPin, ArrowLeft, Share2, Heart, Loader2, ArrowRight } from 'lucide-react';
-import api from '../services/api';
+import api, { getImageUrl } from '../services/api';
 import ChatWindow from '../components/ChatWindow';
 import { useWishlist } from '../context/WishlistContext';
 import HeartButton from '../components/HeartButton';
@@ -108,7 +108,7 @@ const EventDetail = () => {
         <meta name="description" content={event.description.substring(0, 160)} />
         <meta property="og:title" content={`${event.title} at ${event.location}`} />
         <meta property="og:description" content={event.description.substring(0, 160)} />
-        <meta property="og:image" content={event.image} />
+        <meta property="og:image" content={getImageUrl(event.image)} />
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -122,7 +122,7 @@ const EventDetail = () => {
           <div className="lg:col-span-2 space-y-12">
             <div className="relative aspect-[21/9] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white">
               <img 
-                src={event.image} 
+                src={getImageUrl(event.image)} 
                 alt={event.title} 
                 className="w-full h-full object-cover"
               />

@@ -43,6 +43,9 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Static folder
+app.use(express.static(path.join(__dirname, '../public')));
+
 // Mount routers
 app.use('/api/v1/events', eventRoutes);
 app.use('/api/v1/auth', authRoutes);
