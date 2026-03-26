@@ -6,12 +6,18 @@ import { useWishlist } from '../context/WishlistContext';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+  const getAuthStatus = () => {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return { isLoggedIn: !!token, isAdmin: user.role === 'admin' };
+  };
+
+  const [auth, setAuth] = useState(getAuthStatus());
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    const handleAuthChange = () => setIsLoggedIn(!!localStorage.getItem('token'));
+    const handleAuthChange = () => setAuth(getAuthStatus());
 
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('authChange', handleAuthChange);
@@ -23,7 +29,8 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    setIsLoggedIn(false);
+    localStorage.removeItem('user');
+    setAuth({ isLoggedIn: false, isAdmin: false });
     navigate('/login');
   };
 
@@ -65,11 +72,13 @@ const Navbar = () => {
           
           <div className="h-6 w-px bg-white/10 mx-2"></div>
 
-          {isLoggedIn ? (
+          {auth.isLoggedIn ? (
             <div className="flex items-center gap-4">
-              <Link to="/admin" className="p-2.5 bg-white/10 rounded-xl hover:bg-gold-500 group transition-all">
-                <LayoutDashboard className="w-5 h-5 text-gold-500 group-hover:text-emerald-950" />
-              </Link>
+              {auth.isAdmin && (
+                <Link to="/admin" className="p-2.5 bg-white/10 rounded-xl hover:bg-gold-500 group transition-all">
+                  <LayoutDashboard className="w-5 h-5 text-gold-500 group-hover:text-emerald-950" />
+                </Link>
+              )}
               <button 
                 onClick={handleLogout}
                 className="bg-gold-500 text-emerald-950 px-6 py-2.5 rounded-xl font-black text-sm hover:bg-white transition-all shadow-lg shadow-gold-500/10"
@@ -108,7 +117,7 @@ const Navbar = () => {
               <Link to="/about" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Our Story</Link>
               <Link to="/contact" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Contact</Link>
               <div className="h-px bg-white/10 my-8"></div>
-              {isLoggedIn ? (
+              {auth.isLoggedIn ? (
                 <button onClick={handleLogout} className="w-full bg-gold-500 text-emerald-950 py-5 rounded-2xl font-black">LOGOUT</button>
               ) : (
                 <Link to="/register" onClick={() => setIsOpen(false)} className="block w-full text-center bg-gold-500 text-emerald-950 py-5 rounded-2xl font-black">JOIN EXCLUSIVE</Link>

@@ -17,6 +17,7 @@ const Register = () => {
     try {
       const response = await api.post('/auth/register', formData);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
       window.dispatchEvent(new Event('authChange'));
       navigate('/');
     } catch (err) {
