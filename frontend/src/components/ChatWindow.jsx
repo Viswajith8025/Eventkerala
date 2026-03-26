@@ -37,10 +37,17 @@ const ChatWindow = ({ eventId, eventTitle }) => {
     // Initialize Socket
     socketRef.current = io(API_URL.replace('/api/v1', ''));
 
-    socketRef.current.emit('join_room', eventId);
+    // Join isolated room
+    socketRef.current.emit('join_room', { 
+      eventId, 
+      userId: user.id 
+    });
 
     socketRef.current.on('receive_message', (data) => {
-      setMessages((prev) => [...prev, data]);
+      // Only append if it belongs to this event and user thread
+      if (data.eventId === eventId && (data.sender === user.id || data.recipient === user.id)) {
+        setMessages((prev) => [...prev, data]);
+      }
     });
 
     return () => {

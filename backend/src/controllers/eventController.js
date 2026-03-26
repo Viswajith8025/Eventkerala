@@ -109,3 +109,15 @@ exports.deleteEvent = catchAsync(async (req, res, next) => {
     message: 'Event deleted successfully',
   });
 });
+
+// @desc    Get all events (Admin - including pending/rejected)
+// @route   GET /api/v1/events/admin
+// @access  Private/Admin
+exports.adminGetAllEvents = catchAsync(async (req, res, next) => {
+  const events = await Event.find().sort('-createdAt');
+  res.status(200).json({
+    success: true,
+    count: events.length,
+    data: events,
+  });
+});

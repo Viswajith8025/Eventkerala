@@ -24,16 +24,25 @@ app.set('socketio', io);
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
 
-  // Join a specific event room
-  socket.on('join_room', (eventId) => {
-    socket.join(eventId);
-    console.log(`User ${socket.id} joined room: ${eventId}`);
+  // Join a specific event-user room
+  socket.on('join_room', ({ eventId, userId }) => {
+    // Isolated room for (eventId, userId)
+    const room = `event:${eventId}:user:${userId}`;
+    socket.join(room);
+    console.log(`User ${socket.id} joined isolated room: ${room}`);
+  });
+
+  socket.on('admin_join', () => {
+    socket.join('admin');
+    console.log(`Admin ${socket.id} joined global admin room`);
   });
 
   // Handle real-time messages
   socket.on('send_message', (data) => {
-    // data: { eventId, senderName, content, senderId }
-    io.to(data.eventId).emit('receive_message', data);
+    // data: { eventId, userId, senderName, content, senderId }
+    const room = `event:${data.eventId}:user:${data.userId || data.senderId}`;
+    io.to(room).to('admin').emit('receive_message', data); // Also send to admin room
+    console.log(`Message in room ${room} from ${data.senderName}`);
   });
 
   socket.on('disconnect', () => {
