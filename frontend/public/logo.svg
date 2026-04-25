@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="heritageGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#064e3b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d4af37;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Outer Circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#heritageGradient)" stroke="url(#goldGradient)" stroke-width="4"/>
+  <!-- Inner Design: Stylized 'K' for Kerala with wave motif -->
+  <g transform="translate(100,100)">
+    <!-- Circular wave pattern representing backwaters -->
+    <path d="M -50 0 Q -30 -30 0 -30 Q 30 -30 50 0 Q 30 30 0 30 Q -30 30 -50 0" fill="none" stroke="url(#goldGradient)" stroke-width="3" opacity="0.8"/>
+    <path d="M -40 0 Q -20 -25 0 -25 Q 20 -25 40 0 Q 20 25 0 25 Q -20 25 -40 0" fill="none" stroke="url(#goldGradient)" stroke-width="2" opacity="0.6"/>
+    <!-- Stylized letter K -->
+    <path d="M -20 -35 L -20 35 M -20 0 L 25 -35 M -20 0 L 25 35" fill="none" stroke="white" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <!-- Accent dots -->
+  <circle cx="100" cy="25" r="6" fill="url(#goldGradient)" opacity="0.9"/>
+  <circle cx="175" cy="100" r="6" fill="url(#goldGradient)" opacity="0.9"/>
+  <circle cx="100" cy="175" r="6" fill="url(#goldGradient)" opacity="0.9"/>
+  <circle cx="25" cy="100" r="6" fill="url(#goldGradient)" opacity="0.9"/>
+</svg>

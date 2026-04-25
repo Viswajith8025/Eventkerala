@@ -3,7 +3,7 @@ import { MessageCircle } from 'lucide-react';
 
 const WhatsAppButton = () => {
   // Replace with the actual phone number
-  const phoneNumber = '917736958025';
+  const phoneNumber = '[PHONE_NUMBER]';
   const message = 'Hello LiveKeralam! I would like to partner with you or publish an event.';
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
@@ -19,7 +19,7 @@ const WhatsAppButton = () => {
         <MessageCircle className="w-8 h-8 fill-current" />
 
         {/* Tooltip */}
-        <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-4 py-2 bg-emerald-950 text-gold-500 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none border border-gold-500/30 backdrop-blur-md">
+        <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-4 py-2 bg-emerald-950 text-gold-500 text-xs font-black uppercase tracking-[0.2em] rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none border border-gold-500/30 backdrop-blur-md">
           Connect with Us
         </div>
       </div>

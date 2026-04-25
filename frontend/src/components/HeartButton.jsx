@@ -16,6 +16,7 @@ const HeartButton = ({ item, type, className = "" }) => {
   return (
     <button 
       onClick={handleClick}
+      aria-label={active ? "Remove from wishlist" : "Add to wishlist"}
       className={`p-3 rounded-2xl backdrop-blur-md transition-all duration-300 border ${
         active 
           ? 'bg-red-500 text-white border-red-400 shadow-lg shadow-red-500/30' 

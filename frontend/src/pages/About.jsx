@@ -23,7 +23,7 @@ const About = () => {
           <div className="space-y-10 order-2 lg:order-1">
             <div className="flex items-center gap-4 text-gold-600 animate-fade-in">
               <Sparkles className="w-5 h-5" />
-              <span className="text-[10px] font-black uppercase tracking-[0.4em]">More Than a Map. A Movement.</span>
+              <span className="text-xs font-black uppercase tracking-[0.4em]">More Than a Map. A Movement.</span>
             </div>
             <h1 className="text-7xl md:text-9xl font-display font-medium text-emerald-950 leading-[0.85] tracking-tighter">
               Kerala, <br /> <span className="italic text-gold-600">Decoded.</span>
@@ -44,7 +44,7 @@ const About = () => {
             <div className="absolute -bottom-10 -right-4 md:-right-10 bg-white p-8 md:p-10 rounded-[3rem] shadow-2xl border border-emerald-900/5 max-w-xs backdrop-blur-sm bg-white/90">
               <div className="flex items-center gap-3 text-gold-600 mb-4">
                 <Target className="w-5 h-5" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Our Focus</span>
+                <span className="text-xs font-black uppercase tracking-widest">Our Focus</span>
               </div>
               <p className="text-emerald-950 font-display text-2xl font-bold italic mb-2 leading-tight">"Truth in every trail."</p>
               <p className="text-emerald-900/50 text-xs font-medium leading-relaxed">Curating the collective heartbeat of Kerala with uncompromising authenticity.</p>
@@ -93,7 +93,7 @@ const About = () => {
         <div className="text-center space-y-8 mb-24">
           <div className="inline-flex items-center gap-3 bg-emerald-50 px-6 py-3 rounded-full text-gold-600 border border-emerald-100">
             <CheckCircle className="w-4 h-4" />
-            <span className="text-[10px] font-black uppercase tracking-widest">The LiveKeralam Answer</span>
+            <span className="text-xs font-black uppercase tracking-widest">The LiveKeralam Answer</span>
           </div>
           <h2 className="text-6xl md:text-8xl font-display font-medium text-emerald-950 tracking-tighter">
             One Pulse. <span className="italic text-gold-600">One Platform.</span>
@@ -132,6 +132,25 @@ const About = () => {
         </div>
       </section>
 
+      {/* 4. Trust Stats (The Impact) */}
+      <section className="py-32 max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
+            {[
+                { n: "14", l: "Districts Covered" },
+                { n: "500+", l: "Curated Festivals" },
+                { n: "2.5M+", l: "Cultural Data Points" },
+                { n: "0", l: "Subscription Fees" }
+            ].map((stat, i) => (
+                <div key={i} className="text-center group">
+                    <h3 className="text-6xl md:text-8xl font-display font-medium text-emerald-950 mb-4 group-hover:text-gold-600 transition-colors duration-500">{stat.n}</h3>
+                    <div className="h-px w-12 bg-gold-500/30 mx-auto mb-6 group-hover:w-20 transition-all duration-500"></div>
+                    <p className="text-xs font-black uppercase tracking-[0.4em] text-emerald-900/40">{stat.l}</p>
+                </div>
+            ))}
+        </div>
+      </section>
+
+
       {/* 4. Vision Section */}
       <section className="bg-emerald-100/30 py-40 text-center">
         <div className="max-w-4xl mx-auto px-6 space-y-12">
@@ -151,7 +170,7 @@ const About = () => {
           <div className="w-full md:w-1/2 space-y-10">
              <div className="flex items-center gap-4 text-gold-600">
                 <Users className="w-5 h-5" />
-                <span className="text-[10px] font-black uppercase tracking-[0.4em]">The Journey Ahead</span>
+                <span className="text-xs font-black uppercase tracking-[0.4em]">The Journey Ahead</span>
              </div>
              <h2 className="text-6xl font-display font-medium text-emerald-950 tracking-tighter">
                Building the <br /><span className="italic text-gold-600">Future of Heritage.</span>
@@ -163,16 +182,16 @@ const About = () => {
           <div className="w-full md:w-1/2 space-y-8">
              {[
                { p: "Phase 1 - Sync", d: "Real-time event synchronization and district-wide discovery.", s: "Completed" },
-               { p: "Phase 2 - SoulSync", d: "AI-driven vibe-based itineraries and heritage planning.", s: "Live" },
+               { p: "Phase 2 - Heritage Matchmaker", d: "Intelligent vibe-based itineraries and heritage planning.", s: "Live" },
                { p: "Phase 3 - Ecosystem", d: "Verified local guide integration and cultural storytelling.", s: "Coming Q4" }
              ].map((phase, idx) => (
                <div key={idx} className="p-8 bg-white border border-emerald-900/5 rounded-3xl shadow-lg relative flex items-center justify-between group overflow-hidden">
                   <div className="absolute left-0 top-0 bottom-0 w-2 bg-emerald-950 group-hover:w-full transition-all duration-700 opacity-5"></div>
                   <div className="relative z-10">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-gold-600 mb-1">{phase.p}</p>
+                    <p className="text-xs font-black uppercase tracking-widest text-gold-600 mb-1">{phase.p}</p>
                     <h4 className="text-xl font-bold text-emerald-950">{phase.d}</h4>
                   </div>
-                  <div className={`relative z-10 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${phase.s === 'Coming Q4' ? 'bg-emerald-50 text-emerald-400' : 'bg-gold-50 text-gold-600'}`}>
+                  <div className={`relative z-10 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest ${phase.s === 'Coming Q4' ? 'bg-emerald-50 text-emerald-400' : 'bg-gold-50 text-gold-600'}`}>
                     {phase.s}
                   </div>
                </div>
@@ -193,10 +212,10 @@ const About = () => {
                Kerala is happening right now. Are you ready to find it?
             </p>
             <div className="flex flex-col md:flex-row justify-center items-center gap-6 pt-8">
-              <Link to="/events" className="px-16 py-8 bg-gold-600 text-emerald-950 rounded-[2rem] font-black text-[10px] tracking-[0.4em] uppercase hover:scale-105 transition-all shadow-2xl flex items-center gap-4">
+              <Link to="/events" className="px-16 py-8 bg-gold-600 text-emerald-950 rounded-[2rem] font-black text-xs tracking-[0.4em] uppercase hover:scale-105 transition-all shadow-2xl flex items-center gap-4">
                 Explore Live Events <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link to="/contact" className="px-16 py-8 bg-white/10 text-white rounded-[2rem] font-black text-[10px] tracking-[0.4em] uppercase hover:bg-white/20 transition-all border border-white/20">
+              <Link to="/contact" className="px-16 py-8 bg-white/10 text-white rounded-[2rem] font-black text-xs tracking-[0.4em] uppercase hover:bg-white/20 transition-all border border-white/20">
                 Partner with us
               </Link>
             </div>

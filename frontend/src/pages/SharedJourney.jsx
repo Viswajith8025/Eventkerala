@@ -51,7 +51,7 @@ const SharedJourney = () => {
         <div className="mb-24 space-y-6 text-center">
           <div className="flex items-center justify-center gap-4 text-gold-600">
              <Share2 className="w-5 h-5" />
-             <span className="text-[10px] font-black uppercase tracking-[0.4em]">Shared Collection</span>
+             <span className="text-xs font-black uppercase tracking-[0.4em]">Shared Collection</span>
           </div>
           <h1 className="text-7xl font-display font-medium text-emerald-950">
             Heritage <span className="italic text-gold-600">Discoveries.</span>
@@ -101,7 +101,7 @@ const SharedJourney = () => {
                       <div className="relative bg-white border border-emerald-900/5 rounded-[3.5rem] overflow-hidden shadow-2xl shadow-emerald-900/5 p-4 transition-all duration-700">
                         <div className="aspect-[4/5] overflow-hidden rounded-[2.5rem] relative">
                           <img src={place.image} className="w-full h-full object-cover" alt={place.name} />
-                          <div className="absolute top-6 right-6 bg-emerald-950/80 backdrop-blur-md px-5 py-2.5 rounded-2xl text-[10px] font-black text-gold-500 uppercase tracking-widest border border-gold-500/30">
+                          <div className="absolute top-6 right-6 bg-emerald-950/80 backdrop-blur-md px-5 py-2.5 rounded-2xl text-xs font-black text-gold-500 uppercase tracking-widest border border-gold-500/30">
                             {place.category || 'Spotlight'}
                           </div>
                         </div>

@@ -12,6 +12,11 @@ const messageRoutes = require('./routes/messageRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const userRoutes = require('./routes/userRoutes');
+
+
+const { nosqlSanitizer, xssSanitizer } = require('./middlewares/security');
+const { apiLimiter, authLimiter } = require('./middlewares/rateLimit');
 
 const errorHandler = require('./middlewares/error');
 
@@ -51,6 +56,14 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Data sanitization
+app.use(nosqlSanitizer);
+app.use(xssSanitizer);
+
+// Apply rate limiting
+app.use('/api', apiLimiter);
+app.use('/api/v1/auth', authLimiter);
+
 // Static folder
 app.use(express.static(path.join(__dirname, '../public')));
 
@@ -62,10 +75,12 @@ app.use('/api/v1/messages', messageRoutes);
 app.use('/api/v1/upload', uploadRoutes);
 app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/contact', contactRoutes);
+app.use('/api/v1/user', userRoutes);
+
 
 // Routes
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'EventKerala API is running' });
+  res.status(200).json({ status: 'OK', message: 'LiveKeralam API is running' });
 });
 
 // Error handling middleware

@@ -1,31 +1,64 @@
-import React, { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect, Suspense, lazy } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import NProgress from 'nprogress';
 import { io } from 'socket.io-client';
 import toast, { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import Places from './pages/Places';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import AdminDashboard from './pages/AdminDashboard';
-import EventDetail from './pages/EventDetail';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import Wishlist from './pages/Wishlist';
-import SharedJourney from './pages/SharedJourney';
-import SoulSync from './pages/SoulSync';
 import WhatsAppButton from './components/WhatsAppButton';
 import ScrollToTop from './components/ScrollToTop';
 import { WishlistProvider } from './context/WishlistContext';
+import { AuthProvider } from './context/AuthContext';
 import { HelmetProvider } from 'react-helmet-async';
 import ErrorBoundary from './components/ErrorBoundary';
-import ProtectedRoute from './components/ProtectedRoute';
+import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
+import 'nprogress/nprogress.css';
+
+// Route-based Code Splitting
+const Home = lazy(() => import('./pages/Home'));
+const Places = lazy(() => import('./pages/Places'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const EventDetail = lazy(() => import('./pages/EventDetail'));
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Wishlist = lazy(() => import('./pages/Wishlist'));
+const SharedJourney = lazy(() => import('./pages/SharedJourney'));
+const HeritageMatchmaker = lazy(() => import('./pages/SoulSync'));
+const CreateEvent = lazy(() => import('./pages/CreateEvent'));
+
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-[#FDFDFF]">
+    <div className="w-16 h-16 border-4 border-gold-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
 
 function App() {
+  const location = useLocation();
+
   useEffect(() => {
+    // NProgress configuration
+    NProgress.configure({ showSpinner: false, speed: 400, minimum: 0.15 });
+    
+    const handleStart = () => NProgress.start();
+    const handleDone = () => NProgress.done();
+
+    // Hook into router navigation events
+    handleStart();
+    const timeout = setTimeout(handleDone, 500);
+    return () => clearTimeout(timeout);
+  }, [location]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token || token === 'null' || token === 'undefined') return;
+
     const socket = io(API_URL.replace('/api/v1', ''));
 
     socket.on('new_event', (data) => {
@@ -60,36 +93,67 @@ function App() {
       ), { duration: 5000 });
     });
 
+    // Request location if logged in
+    const requestLocation = async () => {
+      if (token && !localStorage.getItem('userLocation')) {
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              localStorage.setItem('userLocation', JSON.stringify({ lat: latitude, lng: longitude }));
+              toast.success('Location synchronized for heritage discovery', {
+                icon: '📍',
+                style: { borderRadius: '1rem', background: '#064e3b', color: '#fbbf24', fontWeight: 'bold' }
+              });
+            },
+            () => {
+              console.log('Location access denied');
+            }
+          );
+        }
+      }
+    };
+
+    requestLocation();
+
     return () => socket.disconnect();
   }, []);
 
   return (
     <ErrorBoundary>
       <HelmetProvider>
-        <WishlistProvider>
-          <div className="flex flex-col min-h-screen">
-            <Toaster position="top-right" />
-            <ScrollToTop />
-            <Navbar />
-            <main className="flex-grow bg-[#FDFDFF]">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/places" element={<Places />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/soulsync" element={<SoulSync />} />
-                <Route path="/share/:code" element={<SharedJourney />} />
-                <Route path="/events/:id" element={<EventDetail />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-              </Routes>
-            </main>
-            <Footer />
-            <WhatsAppButton />
-          </div>
-        </WishlistProvider>
+        <AuthProvider>
+          <WishlistProvider>
+            <div className="flex flex-col min-h-screen relative">
+              <Toaster position="top-right" />
+              <ScrollToTop />
+              {!['/login', '/register'].includes(location.pathname) && <Navbar />}
+              <main className="flex-grow bg-[#FDFDFF] relative">
+
+                <Suspense fallback={<PageLoader />}>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/places" element={<Places />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/wishlist" element={<Wishlist />} />
+                    <Route path="/soulsync" element={<HeritageMatchmaker />} />
+                    <Route path="/share/:code" element={<SharedJourney />} />
+                    <Route path="/events/:id" element={<EventDetail />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                    <Route path="/create-event" element={<CreateEvent />} />
+                    <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+
+                  </Routes>
+                </Suspense>
+              </main>
+              {!['/login', '/register'].includes(location.pathname) && <Footer />}
+              <WhatsAppButton />
+            </div>
+          </WishlistProvider>
+        </AuthProvider>
       </HelmetProvider>
     </ErrorBoundary>
   );

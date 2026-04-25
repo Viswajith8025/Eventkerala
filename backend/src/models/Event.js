@@ -46,14 +46,67 @@ const eventSchema = new mongoose.Schema(
       type: Number,
       required: false, // Optional for now
     },
+    category: {
+      type: String,
+      required: [true, 'Please select a category'],
+      enum: ['Temple Festivals', 'Sacred Rituals', 'Art Forms', 'Heritage Sites', 'Other'],
+      default: 'Temple Festivals'
+    },
     price: {
       type: Number,
       default: 0,
     },
+    organizer: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: false, // Optional for legacy events
+    },
+    isSponsored: {
+      type: Boolean,
+      default: false,
+    },
+    analytics: {
+        views: { type: Number, default: 0 },
+        wishlists: { type: Number, default: 0 }
+    }
   },
+
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
+// Soft duplicate check is done in the controller (not a DB unique constraint)
+// because recurring annual festivals (e.g., Thrissur Pooram) have same name/district/approx date each year.
+// A unique index would permanently block them after Year 1.
+
+
+// Compound index for common query pattern (active approved events)
+eventSchema.index({ status: 1, date: 1 });
+
+
+// [REDACTED SEARCH] - Full-text search index for high-performance fuzzy matching
+eventSchema.index({ 
+    title: 'text', 
+    description: 'text', 
+    district: 'text',
+    category: 'text' 
+}, {
+    weights: {
+        title: 10,
+        category: 5,
+        district: 3,
+        description: 1
+    },
+    name: 'EventSearchIndex'
+});
+
+// Virtual for auto-identifying expired events without DB storage
+eventSchema.virtual('isExpired').get(function() {
+  return this.date < new Date();
+});
+
 module.exports = mongoose.model('Event', eventSchema);
+

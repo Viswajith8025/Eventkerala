@@ -7,7 +7,7 @@ const catchAsync = require('../utils/catchAsync');
 // @access  Public (for now, until auth is added)
 exports.createEvent = catchAsync(async (req, res, next) => {
   const event = await Event.create(req.body);
-  
+
   // Emit real-time notification
   const io = req.app.get('socketio');
   if (io) {
@@ -24,42 +24,75 @@ exports.createEvent = catchAsync(async (req, res, next) => {
   });
 });
 
-// @desc    Get all approved events
+// @desc    Get all approved events (Optimized for performance)
 // @route   GET /api/v1/events
 // @access  Public
 exports.getApprovedEvents = catchAsync(async (req, res, next) => {
-  const events = await Event.find({ status: 'approved' }).sort('-date');
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 50; // Increased to 50 for full-view experience
+  const skip = (page - 1) * limit;
+
+  // Efficiency Fix: Only fetch cards-relevant fields (Exclude heavy description)
+  const events = await Event.find({ 
+      status: 'approved',
+      date: { $gte: new Date() } // Automatically hide expired events
+    })
+    .select('-description') 
+    .sort('date')
+    .skip(skip)
+    .limit(limit);
+
   res.status(200).json({
     success: true,
     count: events.length,
+    page,
     data: events,
   });
 });
 
-// @desc    Filter events by district and/or date
+// @desc    Filter events by district and/or date (High-performance Text Search)
 // @route   GET /api/v1/events/filter
 // @access  Public
 exports.filterEvents = catchAsync(async (req, res, next) => {
   const { district, date, search } = req.query;
   let query = { status: 'approved' };
 
+  // Always hide expired events in public filter
+  const now = new Date();
+
   if (district) {
     query.district = district;
   }
 
   if (date) {
-    const start = new Date(date);
-    const end = new Date(date);
-    end.setDate(end.getDate() + 1);
-    query.date = { $gte: start, $lt: end };
+    const searchDate = new Date(date);
+    const startOfSearchDay = new Date(searchDate.setHours(0,0,0,0));
+    const endOfSearchDay = new Date(searchDate.setHours(23,59,59,999));
+    
+    // The starting point should be whichever is later: right now OR the start of the searched day
+    const effectiveStart = startOfSearchDay > now ? startOfSearchDay : now;
+    
+    query.date = { $gte: effectiveStart, $lte: endOfSearchDay };
+  } else {
+    query.date = { $gte: now };
   }
 
+  // Use MongoDB Text Indexes for the search term
   if (search) {
-    query.title = { $regex: search, $options: 'i' };
+    query.$text = { $search: search };
   }
 
-  // Default sort: Latest first (-date)
-  const events = await Event.find(query).sort('-date');
+  // Default projection: Exclude heavy description for list efficiency
+  let mongoQuery = Event.find(query).select('-description');
+
+  // If searching, sort by relevance score
+  if (search) {
+      mongoQuery = mongoQuery.select({ score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } });
+  } else {
+      mongoQuery = mongoQuery.sort('date');
+  }
+
+  const events = await mongoQuery;
 
   res.status(200).json({
     success: true,
@@ -67,6 +100,7 @@ exports.filterEvents = catchAsync(async (req, res, next) => {
     data: events,
   });
 });
+
 
 // @desc    Approve or reject event (Admin)
 // @route   PUT /api/v1/events/:id
@@ -114,10 +148,51 @@ exports.deleteEvent = catchAsync(async (req, res, next) => {
 // @route   GET /api/v1/events/admin
 // @access  Private/Admin
 exports.adminGetAllEvents = catchAsync(async (req, res, next) => {
-  const events = await Event.find().sort('-createdAt');
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 100; // Increased for admin dashboard efficiency
+  const skip = (page - 1) * limit;
+
+  const total = await Event.countDocuments();
+  const events = await Event.find()
+    .sort('-createdAt')
+    .skip(skip)
+    .limit(limit)
+    .populate('organizer', 'name email organization');
+
   res.status(200).json({
     success: true,
     count: events.length,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
     data: events,
   });
 });
+
+// @desc    Increment view count (analytics)
+// @route   PUT /api/v1/events/:id/view
+// @access  Public
+exports.incrementView = catchAsync(async (req, res, next) => {
+  await Event.findByIdAndUpdate(req.params.id, {
+    $inc: { 'analytics.views': 1 }
+  });
+  res.status(200).json({ success: true });
+});
+
+// @desc    Get single event
+// @route   GET /api/v1/events/:id
+// @access  Public
+exports.getEvent = catchAsync(async (req, res, next) => {
+  const event = await Event.findById(req.params.id).populate('organizer', 'name organization');
+
+  if (!event) {
+    return next(new ErrorResponse(`Event not found with id of ${req.params.id}`, 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: event,
+  });
+});
+
+

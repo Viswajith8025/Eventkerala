@@ -25,8 +25,8 @@ const ChatWindow = ({ eventId, eventTitle }) => {
       try {
         const response = await api.get(`/messages/${eventId}`);
         setMessages(response.data.data);
-      } catch (err) {
-        console.error('Error fetching chat history:', err);
+      } catch {
+        console.error('Error fetching chat history');
       } finally {
         setLoading(false);
       }
@@ -38,9 +38,9 @@ const ChatWindow = ({ eventId, eventTitle }) => {
     socketRef.current = io(API_URL.replace('/api/v1', ''));
 
     // Join isolated room
-    socketRef.current.emit('join_room', { 
-      eventId, 
-      userId: user.id 
+    socketRef.current.emit('join_room', {
+      eventId,
+      userId: user.id
     });
 
     socketRef.current.on('receive_message', (data) => {
@@ -53,6 +53,7 @@ const ChatWindow = ({ eventId, eventTitle }) => {
     return () => {
       socketRef.current.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId]);
 
   useEffect(() => {
@@ -123,7 +124,7 @@ const ChatWindow = ({ eventId, eventTitle }) => {
               className={`flex flex-col ${msg.senderName === user.name ? 'items-end' : 'items-start'}`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <span className={`text-[10px] font-bold uppercase tracking-tighter ${msg.senderName.includes('Admin') ? 'text-amber-600' : 'text-gray-400'}`}>
+                <span className={`text-xs font-bold uppercase tracking-tighter ${msg.senderName.includes('Admin') ? 'text-amber-600' : 'text-gray-400'}`}>
                   {msg.senderName}
                   {msg.senderName.includes('Admin') && <span className="ml-1 bg-amber-500 text-white px-1.5 py-0.5 rounded-full text-[8px]">OFFICIAL</span>}
                 </span>

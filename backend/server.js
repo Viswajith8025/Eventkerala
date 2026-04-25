@@ -12,7 +12,7 @@ connectDB();
 const server = http.createServer(app);
 const io = socketio(server, {
   cors: {
-    origin: [process.env.FRONTEND_URL, 'https://eventkeralamm.vercel.app', 'http://localhost:5173'].filter(Boolean),
+    origin: [process.env.FRONTEND_URL, 'https://eventkeralamm.vercel.app', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'].filter(Boolean),
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -51,5 +51,6 @@ io.on('connection', (socket) => {
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+    console.log(`Server is running at http://localhost:${PORT}`);
 });

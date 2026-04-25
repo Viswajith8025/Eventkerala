@@ -54,6 +54,8 @@ const sendTokenResponse = (user, statusCode, res) => {
       id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
+      interests: user.interests || [],
       role: user.role
     }
   });

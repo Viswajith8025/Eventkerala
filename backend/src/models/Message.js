@@ -31,4 +31,7 @@ const messageSchema = new mongoose.Schema(
   }
 );
 
+// Compound index for chat history lookups (event-based and user-based segregation)
+messageSchema.index({ event: 1, sender: 1, createdAt: -1 });
+
 module.exports = mongoose.model('Message', messageSchema);

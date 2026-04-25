@@ -27,7 +27,7 @@ const Wishlist = () => {
             <div className="space-y-6">
               <div className="flex items-center gap-4 text-gold-600">
                 <Heart className="w-5 h-5 fill-current" />
-                <span className="text-[10px] font-black uppercase tracking-[0.4em]">Personal Collection</span>
+                <span className="text-xs font-black uppercase tracking-[0.4em]">Personal Collection</span>
               </div>
               <h1 className="text-7xl font-display font-medium text-emerald-950 leading-none">
                 My <span className="italic text-gold-600">Journey.</span>
@@ -37,7 +37,7 @@ const Wishlist = () => {
             {!isEmpty && (
               <button 
                 onClick={handleShare}
-                className={`flex items-center gap-3 px-10 py-5 rounded-2xl font-black text-[10px] tracking-[0.2em] uppercase transition-all shadow-xl ${
+                className={`flex items-center gap-3 px-10 py-5 rounded-2xl font-black text-xs tracking-[0.2em] uppercase transition-all shadow-xl ${
                   copied 
                     ? 'bg-emerald-900 text-gold-500 shadow-emerald-900/40 translate-y-[-2px]' 
                     : 'bg-white text-emerald-900 border border-emerald-900/10 hover:bg-emerald-50'
@@ -97,7 +97,7 @@ const Wishlist = () => {
                       <div className="relative bg-white border border-emerald-900/5 rounded-[3.5rem] overflow-hidden shadow-2xl shadow-emerald-900/5 p-4 transition-all duration-700">
                         <div className="aspect-[4/5] overflow-hidden rounded-[2.5rem] relative">
                           <img src={place.image} className="w-full h-full object-cover" alt={place.name} />
-                          <div className="absolute top-6 right-6 bg-emerald-950/80 backdrop-blur-md px-5 py-2.5 rounded-2xl text-[10px] font-black text-gold-500 uppercase tracking-widest border border-gold-500/30">
+                          <div className="absolute top-6 right-6 bg-emerald-950/80 backdrop-blur-md px-5 py-2.5 rounded-2xl text-xs font-black text-gold-500 uppercase tracking-widest border border-gold-500/30">
                             {place.category || 'Spotlight'}
                           </div>
                         </div>

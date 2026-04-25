@@ -7,51 +7,59 @@ dotenv.config();
 
 const events = [
   {
-    title: "HananSha Live in Concert",
-    description: "An ethereal musical journey with HananSha, featuring a fusion of soulful melodies and modern electronic beats. A one-night-exclusive event in the heart of Kochi.",
-    date: new Date('2026-05-15T19:00:00'),
-    location: "Bolgatty Palace Grounds, Kochi",
-    district: "Ernakulam",
-    category: "Culture",
-    image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&q=80&w=1000", // Placeholder for HananSha
-    price: 1500,
-    organizer: "HananSha Official",
+    title: "Thrissur Pooram 2026",
+    description: "The 'Festival of Festivals' in Kerala. A grand display of decorated elephants, traditional percussion (Melam), and spectacular fireworks at the Vadakkunnathan Temple.",
+    date: new Date('2026-04-26T14:00:00'),
+    location: "Thekkinkadu Maidan, Thrissur",
+    district: "Thrissur",
+    category: "Temple Festivals",
+    image: "https://images.unsplash.com/photo-1590650046871-92c887180603?auto=format&fit=crop&q=80&w=1000",
+    price: 0,
+    status: "approved",
+    isSponsored: true
+  },
+  {
+    title: "Nehru Trophy Boat Race",
+    description: "The most famous snake boat race in the world. Witness the rhythmic rowing of hundred-rower boats on the Punnamada Lake.",
+    date: new Date('2026-08-08T11:00:00'),
+    location: "Punnamada Lake, Alappuzha",
+    district: "Alappuzha",
+    category: "Other",
+    image: "https://images.unsplash.com/photo-1603204077823-3a789a74a621?auto=format&fit=crop&q=80&w=1000",
+    price: 500,
     status: "approved"
   },
   {
-    title: "Vedan Live: The Voice of Streets",
-    description: "Experience the raw energy of Vedan as he takes the stage at Trivandrum. A powerful hip-hop performance that brings the stories of the streets to life.",
-    date: new Date('2026-06-20T18:30:00'),
-    location: "Nishagandhi Auditorium, Trivandrum",
+    title: "Theyyam Ritual Performance",
+    description: "Experience the divine dance of Northern Kerala. Theyyam is a ritualistic art form where men transform into deities through elaborate costumes and intense performances.",
+    date: new Date('2026-11-20T22:00:00'),
+    location: "Parassinikadavu, Kannur",
+    district: "Kannur",
+    category: "Sacred Rituals",
+    image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&q=80&w=1000",
+    price: 0,
+    status: "approved"
+  },
+  {
+    title: "Kochi-Muziris Biennale",
+    description: "The largest contemporary art exhibition in South Asia. International artists showcase their work across various venues in Fort Kochi and Mattancherry.",
+    date: new Date('2026-12-12T10:00:00'),
+    location: "Aspinwall House, Fort Kochi",
+    district: "Ernakulam",
+    category: "Art Forms",
+    image: "https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&q=80&w=1000",
+    price: 150,
+    status: "approved"
+  },
+  {
+    title: "Onam Week Celebrations",
+    description: "The harvest festival of Kerala. Grand processions, Pulikali (Tiger Dance), and elaborate Pookalams (Floral Carpets) across the state capital.",
+    date: new Date('2026-09-04T09:00:00'),
+    location: "Kanakakunnu Palace, Thiruvananthapuram",
     district: "Thiruvananthapuram",
     category: "Other",
-    image: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=1000", // Placeholder for Vedan
-    price: 800,
-    organizer: "StreetVoice Entertainment",
-    status: "approved"
-  },
-  {
-    title: "Grand Kerala Car Expo 2026",
-    description: "The biggest automotive show in South India. Discover supercars, electric vehicles, and classic vintage collections all under one roof.",
-    date: new Date('2026-04-10T10:00:00'),
-    location: "Calicut Trade Centre, Kozhikode",
-    district: "Kozhikode",
-    category: "Other",
-    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1000", // Placeholder for Car Expo
-    price: 200,
-    organizer: "AutoExpo Kerala",
-    status: "approved"
-  },
-  {
-    title: "Malabar International Food Festival",
-    description: "A culinary feast featuring authentic flavors from across Malabar and international guest chefs. Cooking workshops, live music, and endless tasting stalls.",
-    date: new Date('2026-07-05T12:00:00'),
-    location: "Pookode Lake Grounds, Wayanad",
-    district: "Wayanad",
-    category: "Culture",
-    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1599427303058-f16cb9fc8568?auto=format&fit=crop&q=80&w=1000",
     price: 0,
-    organizer: "Wayanad Tourism Council",
     status: "approved"
   }
 ];
@@ -59,9 +67,9 @@ const events = [
 const seedData = async () => {
   try {
     await connectDB();
-    await Event.deleteMany(); // Clear existing events
+    await Event.deleteMany(); 
     await Event.insertMany(events);
-    console.log('Database Seeded Successfully! 🌴🌟');
+    console.log('Database Seeded with Authentic Heritage Data! 🌴🌟');
     process.exit(0);
   } catch (error) {
     console.error('Error seeding database:', error);

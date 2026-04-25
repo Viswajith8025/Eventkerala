@@ -35,8 +35,15 @@ const BookingSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-}, {
-  timestamps: true,
+});
+
+// Index for payment verification lookups
+BookingSchema.index({ razorpayOrderId: 1 });
+
+// Prevent duplicate pending bookings for the same user-event pair
+BookingSchema.index({ event: 1, user: 1, status: 1 }, {
+  unique: true,
+  partialFilterExpression: { status: 'pending' }
 });
 
 module.exports = mongoose.model('Booking', BookingSchema);

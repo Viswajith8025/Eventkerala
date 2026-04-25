@@ -47,7 +47,7 @@ const Contact = () => {
             <div className="space-y-6">
               <div className="flex items-center gap-4 text-gold-600">
                 <MessageCircle className="w-5 h-5" />
-                <span className="text-[10px] font-black uppercase tracking-[0.4em]">Get in Touch</span>
+                <span className="text-xs font-black uppercase tracking-[0.4em]">Get in Touch</span>
               </div>
               <h1 className="text-7xl md:text-8xl font-display font-medium text-emerald-950 leading-[0.9] tracking-tighter">
                 Let's Start a <br /> <span className="italic text-gold-600">Conversation.</span>
@@ -63,7 +63,7 @@ const Contact = () => {
                   <Mail className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/30 mb-1">Email Us</p>
+                  <p className="text-xs font-black uppercase tracking-widest text-emerald-900/30 mb-1">Email Us</p>
                   <p className="text-lg font-bold text-emerald-950">hello@livekeralam.com</p>
                 </div>
               </div>
@@ -73,7 +73,7 @@ const Contact = () => {
                   <Phone className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/30 mb-1">Call Us</p>
+                  <p className="text-xs font-black uppercase tracking-widest text-emerald-900/30 mb-1">Call Us</p>
                   <p className="text-lg font-bold text-emerald-950">+91 7736958025</p>
                 </div>
               </div>
@@ -83,7 +83,7 @@ const Contact = () => {
                   <MapPin className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/30 mb-1">Visit Us</p>
+                  <p className="text-xs font-black uppercase tracking-widest text-emerald-900/30 mb-1">Visit Us</p>
                   <p className="text-lg font-bold text-emerald-950">Kozhikode, Kerala, India</p>
                 </div>
               </div>
@@ -91,7 +91,7 @@ const Contact = () => {
 
             {/* Social Links */}
             <div className="pt-10 space-y-6">
-              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/30 italic">Follow our journey</p>
+              <p className="text-xs font-black uppercase tracking-widest text-emerald-900/30 italic">Follow our journey</p>
               <div className="flex gap-6">
                 <a href="#" className="w-12 h-12 rounded-full border border-emerald-950/10 flex items-center justify-center hover:bg-emerald-950 hover:text-white transition-all duration-500">
                   <MessageCircle className="w-5 h-5" />
@@ -107,6 +107,7 @@ const Contact = () => {
           </div>
 
           {/* Contact Form Card */}
+
           <div className="bg-white p-12 md:p-16 rounded-[4rem] shadow-2xl shadow-emerald-950/5 border border-emerald-900/5 relative overflow-hidden group">
             {/* Background Accent */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-900/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
@@ -114,7 +115,7 @@ const Contact = () => {
             <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-1">Full Name</label>
+                  <label className="text-xs font-black uppercase tracking-widest text-emerald-900/40 ml-1">Full Name</label>
                   <input 
                     type="text" required
                     className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-4 px-6 transition-all text-emerald-950 font-medium" 
@@ -124,7 +125,7 @@ const Contact = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-1">Email</label>
+                  <label className="text-xs font-black uppercase tracking-widest text-emerald-900/40 ml-1">Email</label>
                   <input 
                     type="email" required
                     className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-4 px-6 transition-all text-emerald-950 font-medium" 
@@ -136,7 +137,7 @@ const Contact = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-1">Subject</label>
+                <label className="text-xs font-black uppercase tracking-widest text-emerald-900/40 ml-1">Subject</label>
                 <select 
                   className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-4 px-6 transition-all text-emerald-950 font-medium appearance-none"
                   value={formData.subject}
@@ -150,7 +151,7 @@ const Contact = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-1">Message</label>
+                <label className="text-xs font-black uppercase tracking-widest text-emerald-900/40 ml-1">Message</label>
                 <textarea 
                   rows="5" required
                   className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-[2rem] py-4 px-6 transition-all text-emerald-950 font-medium resize-none" 
@@ -171,8 +172,23 @@ const Contact = () => {
           </div>
 
         </div>
+
+        {/* Floating Experience Stack */}
+        <div className="mt-40 grid grid-cols-2 md:grid-cols-4 gap-4 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-1000">
+            {[
+                "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&q=80&w=400",
+                "https://images.unsplash.com/photo-1593693397690-362ae9666ec3?auto=format&fit=crop&q=80&w=400",
+                "https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&q=80&w=400",
+                "https://images.unsplash.com/photo-1544735716-e41364272186?auto=format&fit=crop&q=80&w=400"
+            ].map((img, i) => (
+                <div key={i} className="aspect-square rounded-[2rem] overflow-hidden">
+                    <img src={img} className="w-full h-full object-cover" alt="Kerala Heritage" />
+                </div>
+            ))}
+        </div>
       </div>
     </div>
+
   );
 };
 

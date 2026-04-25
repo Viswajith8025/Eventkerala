@@ -12,24 +12,58 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please add an email'],
       unique: true,
-      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please add a valid email'],
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please add a valid email'],
     },
     role: {
       type: String,
-      enum: ['user', 'admin'],
+      enum: ['user', 'admin', 'organizer'],
       default: 'user',
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    phone: {
+      type: String,
+      match: [/^[0-9+\-\s()]*$/, 'Please add a valid phone number'],
+    },
+    organization: {
+      name: String,
+      type: {
+        type: String,
+        enum: ['Temple Committee', 'Art Troupe', 'Tourism Body', 'Other'],
+      },
+      verificationDoc: String, // Path to ID/Doc
+    },
     password: {
+
       type: String,
       required: [true, 'Please add a password'],
       minlength: 6,
       select: false,
     },
+    wishlist: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Event',
+      }
+    ],
+    followedDistricts: [
+      {
+        type: String,
+      }
+    ],
+    interests: [
+      {
+        type: String, // e.g., 'Temple Festivals', 'Art Forms'
+      }
+    ],
   },
   {
     timestamps: true,
   }
 );
+
 
 // Encrypt password using bcrypt
 userSchema.pre('save', async function (next) {

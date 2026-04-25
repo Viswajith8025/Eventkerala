@@ -1,30 +1,68 @@
 import React, { useEffect, useState } from 'react';
-import { MapPin, Loader2, Compass, Sparkles, Footprints, ArrowRight } from 'lucide-react';
+import { MapPin, Loader2, Compass, Sparkles, Footprints, ArrowRight, Filter, Star } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import api, { getImageUrl } from '../services/api';
 import { PlaceCardSkeleton } from '../components/Skeleton';
 import HeartButton from '../components/HeartButton';
 import { Helmet } from 'react-helmet-async';
 
 const Places = () => {
+  const { user, isLoggedIn } = useAuth();
   const [places, setPlaces] = useState([]);
+  const [allPlaces, setAllPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeDistrict, setActiveDistrict] = useState('All');
+  const [showPersonalized, setShowPersonalized] = useState(false);
 
-  useEffect(() => {
-    const fetchPlaces = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get('/places');
-        setPlaces(response.data.data);
-      } catch (err) {
-        setError('Could not load places. Please try again later.');
-      } finally {
-        setTimeout(() => setLoading(false), 800);
-      }
+  const districts = ['All', 'Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Idukki', 'Wayanad', 'Kasargod'];
+
+   useEffect(() => {
+     const fetchPlaces = async () => {
+       try {
+         setLoading(true);
+         const response = await api.get('/places');
+         setPlaces(response.data.data);
+         setAllPlaces(response.data.data);
+       } catch {
+         setError('Could not load places. Please try again later.');
+       } finally {
+         setTimeout(() => setLoading(false), 800);
+       }
+     };
+
+     fetchPlaces();
+   }, []);
+
+    const handleDistrictChange = (district) => {
+      setActiveDistrict(district);
+      applyFilters(district, showPersonalized);
     };
 
-    fetchPlaces();
-  }, []);
+    const togglePersonalized = () => {
+      const newState = !showPersonalized;
+      setShowPersonalized(newState);
+      applyFilters(activeDistrict, newState);
+    };
+
+    const applyFilters = (district, personalized) => {
+      let filtered = [...allPlaces];
+      
+      if (district !== 'All') {
+        filtered = filtered.filter(p => p.district === district);
+      }
+      
+      if (personalized && isLoggedIn && user?.interests?.length > 0) {
+        filtered = filtered.filter(p => {
+          // Map "Heritage Sites" to "Heritage" etc
+          const userInts = user.interests.map(i => i.toLowerCase().replace(' sites', ''));
+          return userInts.some(interest => p.category.toLowerCase().includes(interest));
+        });
+      }
+      
+      setPlaces(filtered);
+    };
+
 
   return (
     <div className="min-h-screen bg-[#FDFDFF] pt-40 pb-40">
@@ -38,7 +76,7 @@ const Places = () => {
           <div className="flex items-center justify-center gap-4 text-gold-600 animate-in fade-in duration-1000">
              <div className="h-px w-8 bg-gold-600/30"></div>
              <Footprints className="w-5 h-5" />
-             <span className="text-[10px] font-black uppercase tracking-[0.4em]">Sacred Destinations</span>
+             <span className="text-xs font-black uppercase tracking-[0.4em]">Sacred Destinations</span>
              <div className="h-px w-8 bg-gold-600/30"></div>
           </div>
           
@@ -50,6 +88,31 @@ const Places = () => {
             Descend into the heart of Malabar, wander through the Western Ghats, and find your soul in the stillness of the backwaters.
           </p>
         </div>
+
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-24">
+            <div className="flex flex-wrap justify-center gap-3">
+                {districts.map(d => (
+                    <button
+                        key={d}
+                        onClick={() => handleDistrictChange(d)}
+                        className={`px-8 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all duration-500 border ${activeDistrict === d ? 'bg-emerald-950 text-gold-500 border-emerald-950 shadow-2xl scale-105' : 'bg-white text-emerald-900/40 border-emerald-900/5 hover:border-gold-500/30 hover:text-emerald-950'}`}
+                    >
+                        {d}
+                    </button>
+                ))}
+            </div>
+            
+            {isLoggedIn && (
+                <button
+                    onClick={togglePersonalized}
+                    className={`flex items-center gap-3 px-8 py-4 rounded-[1.5rem] text-xs font-black uppercase tracking-widest transition-all duration-500 border-2 ${showPersonalized ? 'bg-gold-500 border-gold-500 text-emerald-950 shadow-xl' : 'bg-white border-emerald-950/10 text-emerald-900/40 hover:border-gold-500/50'}`}
+                >
+                    <Star className={`w-4 h-4 ${showPersonalized ? 'fill-emerald-950 animate-pulse' : ''}`} />
+                    {showPersonalized ? 'SoulMatch Active' : 'Match My Interests'}
+                </button>
+            )}
+        </div>
+
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
@@ -76,7 +139,7 @@ const Places = () => {
                       alt={place.name} 
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     />
-                    <div className="absolute top-6 right-6 bg-emerald-950/80 backdrop-blur-md px-5 py-2.5 rounded-2xl text-[10px] font-black text-gold-500 uppercase tracking-widest border border-gold-500/30">
+                    <div className="absolute top-6 right-6 bg-emerald-950/80 backdrop-blur-md px-5 py-2.5 rounded-2xl text-xs font-black text-gold-500 uppercase tracking-widest border border-gold-500/30">
                       {place.category || 'Spotlight'}
                     </div>
                     <HeartButton item={place} type="place" className="absolute top-6 left-6 z-20" />
@@ -98,7 +161,7 @@ const Places = () => {
                     
                     <div className="h-px w-12 bg-emerald-900/10 mx-auto"></div>
                     
-                    <button className="text-emerald-900 font-black text-[10px] tracking-[0.4em] uppercase hover:text-gold-600 transition-all flex items-center justify-center gap-3 w-full">
+                    <button className="text-emerald-900 font-black text-xs tracking-[0.4em] uppercase hover:text-gold-600 transition-all flex items-center justify-center gap-3 w-full">
                       Begin Voyage <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
