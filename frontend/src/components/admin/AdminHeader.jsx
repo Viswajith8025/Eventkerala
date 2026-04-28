@@ -1,6 +1,6 @@
 import React from 'react';
 import { 
-  LayoutDashboard, Calendar, MapPin, MessageSquare, Search, Plus, LogOut
+  LayoutDashboard, Calendar, MapPin, MessageSquare, Search, Plus, LogOut, Users
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -61,6 +61,14 @@ const AdminHeader = ({
             }`}
           >
             <MessageSquare className="w-4 h-4" /> Inbox
+          </button>
+          <button 
+            onClick={() => setActiveTab('users')}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+              activeTab === 'users' ? 'bg-emerald-900 text-white shadow-lg' : 'text-gray-400 hover:text-gray-900'
+            }`}
+          >
+            <Users className="w-4 h-4" /> Community
           </button>
         </div>
         

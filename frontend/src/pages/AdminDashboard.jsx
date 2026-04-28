@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
         import AdminEventTable from '../components/admin/AdminEventTable';
         import AdminPlaceTable from '../components/admin/AdminPlaceTable';
         import AdminMessaging from '../components/admin/AdminMessaging';
+        import AdminUserTable from '../components/admin/AdminUserTable';
         import EventFormModal from '../components/admin/EventFormModal';
         import PlaceFormModal from '../components/admin/PlaceFormModal';
 
@@ -17,6 +18,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('events');
   const [events, setEvents] = useState([]);
   const [places, setPlaces] = useState([]);
+  const [users, setUsers] = useState([]);
   const [messages, setMessages] = useState([]);
   const [contactMessages, setContactMessages] = useState([]);
   const [activeMessageSubTab, setActiveMessageSubTab] = useState('chats');
@@ -90,6 +92,18 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get('/user/admin/users');
+      setUsers(response.data.data);
+    } catch (err) {
+      console.error('Users fetch error:', err);
+    } finally {
+      if (activeTab === 'users') setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
     const token = localStorage.getItem('token');
@@ -128,6 +142,8 @@ const AdminDashboard = () => {
       } else {
         fetchContactMessages();
       }
+    } else if (activeTab === 'users') {
+      fetchUsers();
     }
   }, [activeTab, activeMessageSubTab]);
 
@@ -352,8 +368,18 @@ const AdminDashboard = () => {
           />
         )}
         
+        {activeTab === 'users' && (
+          <div className="bg-white rounded-[3rem] border border-gray-100 shadow-2xl overflow-hidden">
+            <AdminUserTable users={users.filter(u => 
+              u.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+              u.email.toLowerCase().includes(searchTerm.toLowerCase())
+            )} />
+          </div>
+        )}
+        
         {((activeTab === 'events' && filteredEvents.length === 0) || 
           (activeTab === 'places' && places.length === 0) || 
+          (activeTab === 'users' && users.length === 0) || 
           (activeTab === 'messages' && activeMessageSubTab === 'chats' && messages.length === 0) || 
           (activeTab === 'messages' && activeMessageSubTab === 'inquiries' && contactMessages.length === 0)) && !loading && (
           <div className="py-32 flex flex-col items-center justify-center text-center space-y-4">

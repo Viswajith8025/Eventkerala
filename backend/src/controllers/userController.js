@@ -168,3 +168,16 @@ exports.deleteAccount = catchAsync(async (req, res, next) => {
     message: 'Identity and records successfully purged from the chronicles.'
   });
 });
+
+// @desc    Get all users (Admin only)
+// @route   GET /api/v1/user/admin/users
+// @access  Private/Admin
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find().sort('-createdAt');
+  
+  res.status(200).json({
+    success: true,
+    count: users.length,
+    data: users
+  });
+});
