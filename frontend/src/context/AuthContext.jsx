@@ -20,6 +20,8 @@ export const AuthProvider = ({ children }) => {
           if (response.data.success) {
             setUser(response.data.data);
             setToken(storedToken);
+            // Sync local storage with fresh data from server
+            localStorage.setItem('user', JSON.stringify(response.data.data));
           } else {
             handleLogout();
           }
