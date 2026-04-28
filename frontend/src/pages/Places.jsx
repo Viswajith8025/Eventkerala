@@ -126,48 +126,66 @@ const Places = () => {
             <p className="opacity-70 font-medium">{error}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-24 relative">
-            {places.map((place) => (
-              <div key={place._id} className="group relative">
-                {/* Decorative background depth */}
-                <div className="absolute inset-0 bg-emerald-900/5 rounded-[4rem] group-hover:scale-105 transition-transform duration-700"></div>
-                
-                <div className="relative bg-white border border-emerald-900/5 rounded-[3.5rem] overflow-hidden shadow-2xl shadow-emerald-900/5 p-4 hover:shadow-gold-500/10 transition-all duration-700">
-                  <div className="aspect-[4/5] overflow-hidden rounded-[2.5rem] relative ring-1 ring-emerald-900/10">
-                    <img 
-                      src={getImageUrl(place.image)} 
-                      alt={place.name} 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                    />
-                    <div className="absolute top-6 right-6 bg-emerald-950/80 backdrop-blur-md px-5 py-2.5 rounded-2xl text-xs font-black text-gold-500 uppercase tracking-widest border border-gold-500/30">
-                      {place.category || 'Spotlight'}
-                    </div>
-                    <HeartButton item={place} type="place" className="absolute top-6 left-6 z-20" />
-                  </div>
+          <div className="space-y-32">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-24 relative">
+              {(isLoggedIn ? places : places.slice(0, 3)).map((place) => (
+                <div key={place._id} className="group relative">
+                  {/* Decorative background depth */}
+                  <div className="absolute inset-0 bg-emerald-900/5 rounded-[4rem] group-hover:scale-105 transition-transform duration-700"></div>
                   
-                  <div className="p-8 pt-10 text-center space-y-6">
-                    <div className="flex items-center justify-center gap-2 text-gold-600">
-                      <MapPin className="w-4 h-4" />
-                      <span className="text-[11px] font-black uppercase tracking-widest">{place.district}</span>
+                  <div className="relative bg-white border border-emerald-900/5 rounded-[3.5rem] overflow-hidden shadow-2xl shadow-emerald-900/5 p-4 hover:shadow-gold-500/10 transition-all duration-700">
+                    <div className="aspect-[4/5] overflow-hidden rounded-[2.5rem] relative ring-1 ring-emerald-900/10">
+                      <img 
+                        src={getImageUrl(place.image)} 
+                        alt={place.name} 
+                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                      />
+                      <div className="absolute top-6 right-6 bg-emerald-950/80 backdrop-blur-md px-5 py-2.5 rounded-2xl text-xs font-black text-gold-500 uppercase tracking-widest border border-gold-500/30">
+                        {place.category || 'Spotlight'}
+                      </div>
+                      <HeartButton item={place} type="place" className="absolute top-6 left-6 z-20" />
                     </div>
                     
-                    <h3 className="text-4xl font-display font-bold text-emerald-950 group-hover:text-gold-600 transition-colors leading-[1.1]">
-                      {place.name}
-                    </h3>
-                    
-                    <p className="text-emerald-900/50 leading-relaxed line-clamp-2 font-medium italic text-base">
-                      {place.description}
-                    </p>
-                    
-                    <div className="h-px w-12 bg-emerald-900/10 mx-auto"></div>
-                    
-                    <button className="text-emerald-900 font-black text-xs tracking-[0.4em] uppercase hover:text-gold-600 transition-all flex items-center justify-center gap-3 w-full">
-                      Begin Voyage <ArrowRight className="w-4 h-4" />
-                    </button>
+                    <div className="p-8 pt-10 text-center space-y-6">
+                      <div className="flex items-center justify-center gap-2 text-gold-600">
+                        <MapPin className="w-4 h-4" />
+                        <span className="text-[11px] font-black uppercase tracking-widest">{place.district}</span>
+                      </div>
+                      
+                      <h3 className="text-4xl font-display font-bold text-emerald-950 group-hover:text-gold-600 transition-colors leading-[1.1]">
+                        {place.name}
+                      </h3>
+                      
+                      <p className="text-emerald-900/50 leading-relaxed line-clamp-2 font-medium italic text-base">
+                        {place.description}
+                      </p>
+                      
+                      <div className="h-px w-12 bg-emerald-900/10 mx-auto"></div>
+                      
+                      <button className="text-emerald-900 font-black text-xs tracking-[0.4em] uppercase hover:text-gold-600 transition-all flex items-center justify-center gap-3 w-full">
+                        Begin Voyage <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {!isLoggedIn && places.length > 3 && (
+              <div className="p-12 md:p-24 bg-emerald-950 rounded-[5rem] text-center border border-gold-500/20 shadow-2xl relative overflow-hidden group">
+                <div className="absolute inset-0 bg-heritage-gradient opacity-10 group-hover:opacity-20 transition-opacity"></div>
+                <div className="relative z-10 space-y-10">
+                  <h3 className="text-5xl md:text-6xl font-display text-white italic">The remaining <span className="text-gold-500">{places.length - 3} Sanctuaries</span> are sealed.</h3>
+                  <p className="text-white/40 max-w-2xl mx-auto font-medium text-xl italic leading-relaxed">
+                    Our full archive of sacred sites, rock-cut temples, and colonial ruins is reserved for our community of cultural guardians. Join us to unlock the full map.
+                  </p>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-8 pt-6">
+                    <button onClick={() => window.location.href='/register'} className="px-12 py-6 bg-gold-500 text-emerald-950 rounded-3xl font-black text-xs tracking-[0.3em] uppercase hover:scale-105 transition-all shadow-2xl shadow-gold-500/20">Establish Membership</button>
+                    <button onClick={() => window.location.href='/login'} className="px-12 py-6 border-2 border-white/20 text-white rounded-3xl font-black text-xs tracking-[0.3em] uppercase hover:bg-white/10 transition-all">Guardian Login</button>
                   </div>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         )}
         

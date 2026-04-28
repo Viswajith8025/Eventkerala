@@ -4,9 +4,18 @@ const catchAsync = require('../utils/catchAsync');
 
 // @desc    Create new event
 // @route   POST /api/v1/events
-// @access  Public (for now, until auth is added)
+// @access  Private
 exports.createEvent = catchAsync(async (req, res, next) => {
-  const event = await Event.create(req.body);
+  // Whitelist fields to prevent mass assignment
+  const { title, description, district, date, location, category, price, bookingLink, image, latitude, longitude, chatEnabled } = req.body;
+  
+  const eventData = {
+    title, description, district, date, location, category, price, bookingLink, image, latitude, longitude, chatEnabled,
+    organizer: req.user.id,
+    status: req.user.role === 'admin' ? (req.body.status || 'approved') : 'pending'
+  };
+
+  const event = await Event.create(eventData);
 
   // Emit real-time notification
   const io = req.app.get('socketio');
@@ -29,13 +38,12 @@ exports.createEvent = catchAsync(async (req, res, next) => {
 // @access  Public
 exports.getApprovedEvents = catchAsync(async (req, res, next) => {
   const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 50; // Increased to 50 for full-view experience
+  const limit = parseInt(req.query.limit, 10) || 50;
   const skip = (page - 1) * limit;
 
-  // Efficiency Fix: Only fetch cards-relevant fields (Exclude heavy description)
   const events = await Event.find({ 
       status: 'approved',
-      date: { $gte: new Date() } // Automatically hide expired events
+      date: { $gte: new Date() }
     })
     .select('-description') 
     .sort('date')
@@ -56,8 +64,6 @@ exports.getApprovedEvents = catchAsync(async (req, res, next) => {
 exports.filterEvents = catchAsync(async (req, res, next) => {
   const { district, date, search } = req.query;
   let query = { status: 'approved' };
-
-  // Always hide expired events in public filter
   const now = new Date();
 
   if (district) {
@@ -65,13 +71,14 @@ exports.filterEvents = catchAsync(async (req, res, next) => {
   }
 
   if (date) {
-    const searchDate = new Date(date);
-    const startOfSearchDay = new Date(searchDate.setHours(0,0,0,0));
-    const endOfSearchDay = new Date(searchDate.setHours(23,59,59,999));
+    // Fix for HIGH-08: Avoid mutation of Date objects
+    const startOfSearchDay = new Date(date);
+    startOfSearchDay.setHours(0,0,0,0);
     
-    // The starting point should be whichever is later: right now OR the start of the searched day
+    const endOfSearchDay = new Date(date);
+    endOfSearchDay.setHours(23,59,59,999);
+    
     const effectiveStart = startOfSearchDay > now ? startOfSearchDay : now;
-    
     query.date = { $gte: effectiveStart, $lte: endOfSearchDay };
   } else {
     query.date = { $gte: now };
@@ -125,6 +132,27 @@ exports.updateEventStatus = catchAsync(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: event,
+  });
+});
+
+// @desc    Update an event (Admin)
+// @route   PUT /api/v1/events/:id/edit
+// @access  Private/Admin
+exports.updateEvent = catchAsync(async (req, res, next) => {
+  const event = await Event.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true, runValidators: true }
+  );
+
+  if (!event) {
+    return next(new ErrorResponse('Event not found', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: event,
+    message: 'Chronicle entry updated successfully'
   });
 });
 

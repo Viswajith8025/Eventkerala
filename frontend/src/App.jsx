@@ -28,6 +28,7 @@ const Wishlist = lazy(() => import('./pages/Wishlist'));
 const SharedJourney = lazy(() => import('./pages/SharedJourney'));
 const HeritageMatchmaker = lazy(() => import('./pages/SoulSync'));
 const CreateEvent = lazy(() => import('./pages/CreateEvent'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 
 // Loading fallback component
@@ -59,7 +60,20 @@ function App() {
     const token = localStorage.getItem('token');
     if (!token || token === 'null' || token === 'undefined') return;
 
-    const socket = io(API_URL.replace('/api/v1', ''));
+    const socket = io(API_URL.replace('/api/v1', ''), {
+      auth: { token },
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to heritage network');
+    });
+
+    socket.on('connect_error', (err) => {
+      console.warn('Socket connection error, retrying...', err.message);
+    });
 
     socket.on('new_event', (data) => {
       toast.custom((t) => (
@@ -73,7 +87,7 @@ function App() {
               </div>
               <div className="ml-3 flex-1">
                 <p className="text-sm font-black text-gray-900 font-display">
-                  New Event in {data.district}!
+                   New Event in {data.district}!
                 </p>
                 <p className="mt-1 text-sm text-gray-500 font-medium line-clamp-1">
                   {data.title}
@@ -116,7 +130,10 @@ function App() {
 
     requestLocation();
 
-    return () => socket.disconnect();
+    return () => {
+      socket.off('new_event');
+      socket.disconnect();
+    };
   }, []);
 
   return (
@@ -127,7 +144,7 @@ function App() {
             <div className="flex flex-col min-h-screen relative">
               <Toaster position="top-right" />
               <ScrollToTop />
-              {!['/login', '/register'].includes(location.pathname) && <Navbar />}
+              {!['/login', '/register', '/admin'].includes(location.pathname) && <Navbar />}
               <main className="flex-grow bg-[#FDFDFF] relative">
 
                 <Suspense fallback={<PageLoader />}>
@@ -136,20 +153,21 @@ function App() {
                     <Route path="/places" element={<Places />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
-                    <Route path="/wishlist" element={<Wishlist />} />
+                    <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
                     <Route path="/soulsync" element={<HeritageMatchmaker />} />
                     <Route path="/share/:code" element={<SharedJourney />} />
                     <Route path="/events/:id" element={<EventDetail />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                    <Route path="/create-event" element={<CreateEvent />} />
+                    <Route path="/create-event" element={<ProtectedRoute><CreateEvent /></ProtectedRoute>} />
                     <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+                    <Route path="*" element={<NotFound />} />
 
                   </Routes>
                 </Suspense>
               </main>
-              {!['/login', '/register'].includes(location.pathname) && <Footer />}
+              {!['/login', '/register', '/admin'].includes(location.pathname) && <Footer />}
               <WhatsAppButton />
             </div>
           </WishlistProvider>

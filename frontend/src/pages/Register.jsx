@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { UserPlus, Mail, Lock, User, Loader2, AlertCircle, ArrowLeft, Sparkles, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const Register = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { login: authLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,10 +25,9 @@ const Register = () => {
       const response = await api.post('/auth/register', formData);
       const { token, user } = response.data;
       
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      // Use centralized login method to sync state
+      authLogin(token, user);
       
-      window.dispatchEvent(new Event('authChange'));
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || err.response?.data?.message || 'Registration failed. Please try again.');
@@ -138,7 +139,10 @@ const Register = () => {
                   className="w-full bg-emerald-900/5 border border-emerald-900/5 focus:bg-white focus:border-gold-500/50 focus:ring-8 focus:ring-gold-500/5 rounded-[1.5rem] py-5 pl-16 pr-6 transition-all text-emerald-950 font-medium placeholder:text-emerald-900/20"
                   placeholder="Full Name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, name: e.target.value });
+                    if (error) setError(null);
+                  }}
                 />
               </div>
             </div>
@@ -153,7 +157,10 @@ const Register = () => {
                   className="w-full bg-emerald-900/5 border border-emerald-900/5 focus:bg-white focus:border-gold-500/50 focus:ring-8 focus:ring-gold-500/5 rounded-[1.5rem] py-5 pl-16 pr-6 transition-all text-emerald-950 font-medium placeholder:text-emerald-900/20"
                   placeholder="explorer@heritage.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value });
+                    if (error) setError(null);
+                  }}
                 />
               </div>
             </div>
@@ -168,7 +175,10 @@ const Register = () => {
                   className="w-full bg-emerald-900/5 border border-emerald-900/5 focus:bg-white focus:border-gold-500/50 focus:ring-8 focus:ring-gold-500/5 rounded-[1.5rem] py-5 pl-16 pr-6 transition-all text-emerald-950 font-medium placeholder:text-emerald-900/20"
                   placeholder="Minimum 8 characters"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) => {
+                    setFormData({ ...formData, password: e.target.value });
+                    if (error) setError(null);
+                  }}
                 />
               </div>
             </div>

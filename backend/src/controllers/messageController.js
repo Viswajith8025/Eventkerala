@@ -2,13 +2,21 @@ const Message = require('../models/Message');
 
 // @desc    Get messages for an event
 // @route   GET /api/v1/messages/:eventId
-// @access  Public
+// @access  Private
 exports.getMessages = async (req, res, next) => {
   try {
     const { eventId } = req.params;
+    let query = { event: eventId };
 
-    // Public: fetch all messages for this event, newest first
-    const messages = await Message.find({ event: eventId })
+    // SECURITY FIX: If not admin, only show messages where user is sender OR recipient
+    if (req.user.role !== 'admin') {
+      query.$or = [
+        { sender: req.user.id },
+        { recipient: req.user.id }
+      ];
+    }
+
+    const messages = await Message.find(query)
       .populate('sender', 'name')
       .sort('createdAt');
 

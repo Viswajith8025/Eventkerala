@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, X, CheckCircle, Loader2 } from 'lucide-react';
 import api from '../services/api';
+import toast from 'react-hot-toast';
 
 const ImageUpload = ({ onUploadSuccess }) => {
   const [uploading, setUploading] = useState(false);
@@ -10,6 +11,12 @@ const ImageUpload = ({ onUploadSuccess }) => {
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // LOW-02: Client-side file size check (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File size exceeds 5MB limit');
+      return;
+    }
 
     // Show local preview
     const reader = new FileReader();
@@ -36,7 +43,7 @@ const ImageUpload = ({ onUploadSuccess }) => {
       }
     } catch (err) {
       console.error('Upload failed:', err);
-      alert('Upload failed. Please try again.');
+      toast.error('Upload failed. Please try again.');
     } finally {
       setUploading(false);
     }

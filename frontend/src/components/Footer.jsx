@@ -1,104 +1,135 @@
 import React from 'react';
-import { Calendar, Globe, Share2, Send, Mail, MapPin, Phone, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Sparkles, Globe, Share2, Mail, MapPin, ArrowUpRight } from 'lucide-react';
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="relative bg-emerald-950 text-white pt-32 pb-10 overflow-hidden">
-      {/* Dynamic Background Element */}
-      <div className="absolute top-0 right-0 w-1/3 h-full bg-gold-500/5 blur-[120px] pointer-events-none"></div>
-      
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Newsletter / CTA Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 pb-24 border-b border-white/5 items-center">
-            <div className="space-y-6">
-                <h3 className="text-5xl font-display leading-tight italic">Stay sync'd with <br /> <span className="text-gold-500 not-italic font-bold">God's own.</span></h3>
-                <p className="text-white/40 text-lg font-medium leading-relaxed max-w-md">Join 12,000+ culturists receiving weekly heritage alerts and exclusive ritual early-access.</p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-                <input 
-                    type="email" 
-                    placeholder="Enter your email" 
-                    className="flex-grow bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-sm focus:outline-none focus:border-gold-500/50 transition-colors" 
-                />
-                <button className="px-10 py-5 bg-gold-500 text-emerald-950 rounded-2xl font-black text-xs tracking-widest uppercase hover:scale-105 transition-all shadow-xl">Subscribe</button>
-            </div>
+    <footer className="bg-[#080808] text-white pt-32 pb-16 overflow-hidden selection:bg-gold-500 selection:text-emerald-950 border-t border-white/5">
+      <div className="max-w-7xl mx-auto px-8">
+        
+        {/* Top Branding & Statement Section */}
+        <div className="mb-20">
+          <div className="space-y-12">
+            <Link to="/" className="inline-flex items-center gap-5 group">
+              <div className="w-16 h-16 bg-heritage-gradient rounded-[2rem] flex items-center justify-center p-3 ring-1 ring-white/10 group-hover:ring-gold-500/50 transition-all duration-700 shadow-2xl">
+                <img src="/logo.svg" alt="LiveKeralam" className="w-full h-full object-contain" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-4xl font-display font-bold tracking-tighter">Live<span className="text-gold-500 italic">Keralam</span></span>
+                <span className="text-[11px] font-black uppercase tracking-[0.6em] text-white/20">Cultural Preservation Engine</span>
+              </div>
+            </Link>
+
+            <h3 className="text-5xl md:text-7xl font-display leading-[1.1] font-medium max-w-3xl">
+              Mapping the <span className="text-gold-500 italic">unseen</span> heritage of Kerala.
+            </h3>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 py-24">
-          {/* Brand Section */}
+        {/* Links Navigation Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 py-20 border-y border-white/5">
           <div className="space-y-8">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="bg-heritage-gradient p-1.5 rounded-xl w-12 h-12 flex items-center justify-center overflow-hidden ring-1 ring-white/10 shadow-2xl">
-                <img src="/logo.svg" alt="LiveKeralam Logo" className="w-full h-full object-contain" />
+            <h5 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20">Discovery</h5>
+            <ul className="space-y-4">
+              <li><Link to="/#events" className="text-sm font-medium text-white/50 hover:text-gold-500 transition-colors">Sacred Rituals</Link></li>
+              <li><Link to="/places" className="text-sm font-medium text-white/50 hover:text-gold-500 transition-colors">Heritage Sites</Link></li>
+              <li><Link to="/about" className="text-sm font-medium text-white/50 hover:text-gold-500 transition-colors">Cultural Map</Link></li>
+              <li><Link to="/register" className="text-sm font-medium text-white/50 hover:text-gold-500 transition-colors">Join the Tribe</Link></li>
+            </ul>
+          </div>
+
+          <div className="space-y-8">
+            <h5 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20">Identity</h5>
+            <ul className="space-y-4">
+              <li><Link to="/profile" className="text-sm font-medium text-white/50 hover:text-gold-500 transition-colors">Heritage Vault</Link></li>
+              <li><Link to="/wishlist" className="text-sm font-medium text-white/50 hover:text-gold-500 transition-colors">Saved Legends</Link></li>
+              <li><Link to="/contact" className="text-sm font-medium text-white/50 hover:text-gold-500 transition-colors">Submit Stories</Link></li>
+              <li><Link to="/about" className="text-sm font-medium text-white/50 hover:text-gold-500 transition-colors">Our Ethos</Link></li>
+            </ul>
+          </div>
+
+          <div className="space-y-8">
+            <h5 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20">Legal</h5>
+            <ul className="space-y-4">
+              <li><a href="#" className="text-sm font-medium text-white/50 hover:text-gold-500 transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="text-sm font-medium text-white/50 hover:text-gold-500 transition-colors">Terms of Use</a></li>
+              <li><a href="#" className="text-sm font-medium text-white/50 hover:text-gold-500 transition-colors">Cookie Policy</a></li>
+            </ul>
+          </div>
+
+          <div className="space-y-8">
+            <h5 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20">Contact</h5>
+            <div className="space-y-4">
+              <div className="p-4 bg-white/5 border border-white/10 rounded-2xl group hover:border-gold-500/30 transition-all">
+                <div className="flex items-center gap-3 mb-1">
+                  <MapPin className="w-3 h-3 text-gold-500" />
+                  <span className="text-[9px] font-black uppercase tracking-widest text-white/30">Location</span>
+                </div>
+                <p className="text-xs font-bold text-white/70">Kozhikode, Kerala</p>
               </div>
-              <span className="text-3xl font-display font-bold tracking-tighter">Live<span className="text-gold-500 italic">Keralam</span></span>
-            </Link>
-            <p className="text-white/40 leading-relaxed font-medium italic text-sm">
-              From the deep Western Ghats to the Malabar coast, we preserve the digital legacy of Kerala's soul.
-            </p>
+              <div className="p-4 bg-white/5 border border-white/10 rounded-2xl group hover:border-gold-500/30 transition-all">
+                <div className="flex items-center gap-3 mb-1">
+                  <Mail className="w-3 h-3 text-gold-500" />
+                  <span className="text-[9px] font-black uppercase tracking-widest text-white/30">Email</span>
+                </div>
+                <p className="text-xs font-bold text-white/70">heritage@livekeralam.com</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-8">
+            <h5 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20">Social</h5>
             <div className="flex gap-4">
-              {[Globe, Share2, Send, Mail].map((Icon, i) => (
-                  <a key={i} href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-gold-500 hover:text-emerald-950 transition-all duration-500 group">
-                    <Icon className="w-5 h-5 opacity-60 group-hover:opacity-100" />
-                  </a>
+              {[Globe, Share2].map((Icon, i) => (
+                <a 
+                  key={i} 
+                  href="#" 
+                  className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-gold-500 hover:border-gold-500/50 transition-all group"
+                >
+                  <Icon className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                </a>
               ))}
             </div>
           </div>
-
-          {/* Quick Links */}
-          <div className="lg:pl-10">
-            <h4 className="text-xs font-black uppercase tracking-[0.4em] text-white/30 mb-8">Navigation</h4>
-            <ul className="space-y-4 text-white/60 text-sm font-medium">
-              <li><Link to="/" className="hover:text-gold-500 transition-colors">Legendary Traditions</Link></li>
-              <li><Link to="/places" className="hover:text-gold-500 transition-colors">Sacred Sanctuaries</Link></li>
-              <li><Link to="/about" className="hover:text-gold-500 transition-colors">The Foundation</Link></li>
-              <li><Link to="/contact" className="hover:text-gold-500 transition-colors">Whisper to Us</Link></li>
-            </ul>
-          </div>
-
-          {/* Categories */}
-          <div>
-            <h4 className="text-xs font-black uppercase tracking-[0.4em] text-white/30 mb-8">Sacred Threads</h4>
-            <ul className="space-y-4 text-white/60 text-sm font-medium">
-              <li><a href="#" className="hover:text-gold-500 transition-colors">Temple Festivals</a></li>
-              <li><a href="#" className="hover:text-gold-500 transition-colors">Sacred Rituals</a></li>
-              <li><a href="#" className="hover:text-gold-500 transition-colors">Ancient Art Forms</a></li>
-              <li><a href="#" className="hover:text-gold-500 transition-colors">Heritage Sites</a></li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="text-xs font-black uppercase tracking-[0.4em] text-white/30 mb-8">Global Base</h4>
-            <ul className="space-y-6">
-              <li className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 border border-white/10">
-                    <MapPin className="w-4 h-4 text-gold-500" />
-                </div>
-                <span className="text-sm text-white/60 font-medium">Kozhikode, Kerala,<br />India 673001</span>
-              </li>
-              <li className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 border border-white/10">
-                    <Phone className="w-4 h-4 text-gold-500" />
-                </div>
-                <span className="text-sm text-white/60 font-medium">+91 9400 852 147</span>
-              </li>
-            </ul>
-          </div>
         </div>
 
-        <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-black uppercase tracking-widest text-white/20">
-          <p>© 2026 LiveKeralam Heritage Engine. Built for the future of tradition.</p>
-          <div className="flex gap-10">
-            <a href="#" className="hover:text-gold-500 transition-all">Privacy Logic</a>
-            <a href="#" className="hover:text-gold-500 transition-all">Heritage Terms</a>
+        {/* Bottom Credits Bar */}
+        <div className="pt-16 flex flex-col md:flex-row justify-between items-center gap-10">
+          <div className="flex flex-col md:items-start gap-4">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">
+              © {currentYear} LIVEKERALAM • PRESERVING THE INTANGIBLE
+            </p>
+            <p className="text-[11px] font-bold text-white/40 flex items-center gap-2">
+              Crafted with architectural precision by 
+              <a 
+                href="https://viswajith-ten.vercel.app/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gold-500 hover:text-white border-b border-gold-500/30 hover:border-white transition-all pb-0.5"
+              >
+                VISWAJITH
+              </a>
+            </p>
+          </div>
+
+          <div className="flex items-center gap-8">
+             <div className="flex -space-x-3">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="w-10 h-10 rounded-full border-2 border-[#080808] bg-white/10 overflow-hidden">
+                    <img src={`https://i.pravatar.cc/100?u=${i}`} className="w-full h-full object-cover grayscale" alt="Guardian" />
+                  </div>
+                ))}
+             </div>
+             <p className="text-[10px] font-black uppercase tracking-widest text-gold-500/50">
+               Joined by <span className="text-white">1.2k+ Guardians</span>
+             </p>
           </div>
         </div>
       </div>
     </footer>
   );
 };
-
 
 export default Footer;

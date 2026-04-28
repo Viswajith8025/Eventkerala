@@ -6,6 +6,10 @@ const catchAsync = require('../utils/catchAsync');
 // @route   GET /api/v1/places
 // @access  Public
 exports.getPlaces = catchAsync(async (req, res, next) => {
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 50;
+  const skip = (page - 1) * limit;
+
   const { district } = req.query;
   let query = {};
 
@@ -13,20 +17,30 @@ exports.getPlaces = catchAsync(async (req, res, next) => {
     query.district = district;
   }
 
-  const places = await Place.find(query).sort('name');
+  const places = await Place.find(query)
+    .sort('name')
+    .skip(skip)
+    .limit(limit);
 
   res.status(200).json({
     success: true,
     count: places.length,
+    page,
     data: places,
   });
 });
 
 // @desc    Create a place (Admin/Setup)
 // @route   POST /api/v1/places
-// @access  Public (for easier setup, normally protected)
+// @access  Private/Admin
 exports.createPlace = catchAsync(async (req, res, next) => {
-  const place = await Place.create(req.body);
+  // Whitelist fields to prevent mass assignment
+  const { name, description, district, category, image, latitude, longitude } = req.body;
+  
+  const place = await Place.create({
+    name, description, district, category, image, latitude, longitude
+  });
+  
   res.status(201).json({
     success: true,
     data: place,

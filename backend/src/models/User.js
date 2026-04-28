@@ -48,6 +48,12 @@ const userSchema = new mongoose.Schema(
         ref: 'Event',
       }
     ],
+    placeWishlist: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Place',
+      }
+    ],
     followedDistricts: [
       {
         type: String,
@@ -58,6 +64,12 @@ const userSchema = new mongoose.Schema(
         type: String, // e.g., 'Temple Festivals', 'Art Forms'
       }
     ],
+    profileImage: {
+      type: String,
+      default: null,
+    },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
   },
   {
     timestamps: true,
@@ -67,8 +79,8 @@ const userSchema = new mongoose.Schema(
 
 // Encrypt password using bcrypt
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    next();
+  if (!this.password || !this.isModified('password')) {
+    return next();
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
@@ -84,6 +96,23 @@ userSchema.methods.getSignedJwtToken = function () {
 // Match user entered password to hashed password in database
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// Generate and hash password token
+userSchema.methods.getResetPasswordToken = function () {
+  // Generate token
+  const resetToken = require('crypto').randomBytes(20).toString('hex');
+
+  // Hash token and set to resetPasswordToken field
+  this.resetPasswordToken = require('crypto')
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  // Set expire (10 minutes)
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
 };
 
 module.exports = mongoose.model('User', userSchema);

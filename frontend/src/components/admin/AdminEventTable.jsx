@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calendar, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 
-const AdminEventTable = ({ events, onStatusUpdate, onDelete }) => {
+const AdminEventTable = ({ events, onStatusUpdate, onDelete, onEdit }) => {
   return (
     <table className="w-full text-left border-collapse">
       <thead>
@@ -18,7 +18,7 @@ const AdminEventTable = ({ events, onStatusUpdate, onDelete }) => {
             <td className="px-10 py-8">
               <div className="flex items-center gap-6">
                 <div className="relative">
-                  <img src={event.image} alt="" className="w-16 h-16 rounded-[1.2rem] object-cover shadow-lg" loading="lazy" />
+                  <img src={event.image} alt={event.title} className="w-16 h-16 rounded-[1.2rem] object-cover shadow-lg" loading="lazy" />
                   <div className={`absolute -top-2 -right-2 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center ${
                     event.status === 'approved' ? 'bg-green-500' : 
                     event.status === 'pending' ? 'bg-amber-500' : 
@@ -87,6 +87,14 @@ const AdminEventTable = ({ events, onStatusUpdate, onDelete }) => {
                   Reset
                 </button>
                 
+                <button 
+                  onClick={() => onEdit(event)}
+                  className="p-3 bg-blue-50 text-blue-600 rounded-2xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                  title="Edit Chronicle"
+                >
+                  <Calendar className="w-5 h-5" />
+                </button>
+
                 <button 
                   onClick={() => onDelete(event._id)}
                   className="p-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-600 hover:text-white transition-all shadow-sm"

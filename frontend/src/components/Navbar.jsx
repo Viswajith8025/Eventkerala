@@ -24,24 +24,28 @@ const Navbar = () => {
     navigate('/login');
   };
 
-  const handleLogoClick = () => {
-    const newCount = logoClicks + 1;
-    setLogoClicks(newCount);
-    
-    if (newCount === 5) {
-      setLogoClicks(0);
-      if (isAdmin) {
-        navigate('/admin');
-      } else {
-        toast.error('Admin clearance required', {
-           style: { borderRadius: '1rem', background: '#064e3b', color: '#fbbf24' }
-        });
-        setLogoClicks(0);
-      }
-    }
+  const clickTimerRef = React.useRef(null);
 
-    // Reset clicks after 3 seconds of inactivity
-    setTimeout(() => setLogoClicks(0), 3000);
+  const handleLogoClick = () => {
+    setLogoClicks(prev => {
+      const next = prev + 1;
+      
+      if (next === 5) {
+        if (isAdmin) {
+          navigate('/admin');
+        } else {
+          toast.error('Admin clearance required', {
+             style: { borderRadius: '1rem', background: '#064e3b', color: '#fbbf24' }
+          });
+        }
+        return 0;
+      }
+
+      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+      clickTimerRef.current = setTimeout(() => setLogoClicks(0), 3000);
+      
+      return next;
+    });
   };
 
   return (
@@ -73,14 +77,16 @@ const Navbar = () => {
             <span className="text-xs font-black text-gold-600 uppercase tracking-widest">Heritage Matchmaker</span>
           </Link>
 
-          <Link to="/wishlist" className="relative group p-2">
-            <Heart className={`w-6 h-6 transition-all ${isScrolled ? 'text-white group-hover:text-gold-500' : 'text-emerald-950 group-hover:text-emerald-700'}`} />
-            {(wishlist.events.length + wishlist.places.length) > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[11px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg border-2 border-emerald-950 animate-bounce">
-                {wishlist.events.length + wishlist.places.length}
-              </span>
-            )}
-          </Link>
+          {isLoggedIn && (
+            <Link to="/wishlist" className="relative group p-2">
+              <Heart className={`w-6 h-6 transition-all ${isScrolled ? 'text-white group-hover:text-gold-500' : 'text-emerald-950 group-hover:text-emerald-700'}`} />
+              {(wishlist.events.length + wishlist.places.length) > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[11px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg border-2 border-emerald-950 animate-bounce">
+                  {wishlist.events.length + wishlist.places.length}
+                </span>
+              )}
+            </Link>
+          )}
 
           <div className="h-6 w-px bg-white/10 mx-4"></div>
 
@@ -91,7 +97,9 @@ const Navbar = () => {
                      <User className="w-4 h-4" />
                   </div>
                   <div className="flex flex-col">
-                      <span className={`text-[10px] font-black uppercase tracking-widest ${isScrolled ? 'text-white/40 group-hover:text-emerald-950' : 'text-emerald-900/40 group-hover:text-emerald-950'}`}>Guardian</span>
+                      <span className={`text-[10px] font-black uppercase tracking-widest ${isScrolled ? 'text-white/40 group-hover:text-emerald-950' : 'text-emerald-900/40 group-hover:text-emerald-950'}`}>
+                        {isAdmin ? 'Sovereign' : 'Guardian'}
+                      </span>
                       <span className={`text-xs font-bold ${isScrolled ? 'text-white group-hover:text-emerald-950' : 'text-emerald-900 group-hover:text-emerald-950'}`}>Profile</span>
                   </div>
               </Link>
@@ -138,10 +146,12 @@ const Navbar = () => {
                 <Sparkles className="w-8 h-8" />
                 <span className="translate-y-1">Heritage Matchmaker</span>
               </Link>
-              <Link to="/wishlist" onClick={() => setIsOpen(false)} className="flex items-center gap-3 text-3xl font-display font-bold text-white">
-                <Heart className="w-8 h-8" />
-                <span className="translate-y-1">Wishlist ({(wishlist.events?.length || 0) + (wishlist.places?.length || 0)})</span>
-              </Link>
+              {isLoggedIn && (
+                <Link to="/wishlist" onClick={() => setIsOpen(false)} className="flex items-center gap-3 text-3xl font-display font-bold text-white">
+                  <Heart className="w-8 h-8" />
+                  <span className="translate-y-1">Wishlist ({(wishlist.events?.length || 0) + (wishlist.places?.length || 0)})</span>
+                </Link>
+              )}
               {isAdmin && (
                 <Link to="/admin" onClick={() => setIsOpen(false)} className="flex items-center gap-3 text-3xl font-display font-bold text-white">
                   <LayoutDashboard className="w-8 h-8" />
@@ -150,9 +160,25 @@ const Navbar = () => {
               )}
               <div className="h-px bg-white/10 my-8"></div>
               {isLoggedIn ? (
-                <button onClick={handleLogout} className="w-full bg-gold-500 text-emerald-950 py-5 rounded-2xl font-black">LOGOUT</button>
+                <div className="space-y-4">
+                  <Link to="/profile" onClick={() => setIsOpen(false)} className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl group hover:bg-gold-500 transition-all">
+                      <div className="w-12 h-12 bg-gold-500 rounded-xl flex items-center justify-center text-emerald-950 group-hover:bg-emerald-950 group-hover:text-gold-500 transition-all shadow-lg">
+                         <User className="w-6 h-6" />
+                      </div>
+                      <div className="flex flex-col">
+                          <span className="text-xs font-black uppercase tracking-widest text-white/40 group-hover:text-emerald-950">
+                            {isAdmin ? 'Sovereign' : 'Guardian'}
+                          </span>
+                          <span className="text-lg font-display font-bold text-white group-hover:text-emerald-950">My Profile</span>
+                      </div>
+                  </Link>
+                  <button onClick={handleLogout} className="w-full bg-red-500/10 border border-red-500/20 text-red-500 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">LOGOUT</button>
+                </div>
               ) : (
-                <Link to="/register" onClick={() => setIsOpen(false)} className="block w-full text-center bg-gold-500 text-emerald-950 py-5 rounded-2xl font-black">JOIN EXCLUSIVE</Link>
+                <div className="space-y-4">
+                  <Link to="/login" onClick={() => setIsOpen(false)} className="block w-full text-center border border-white/20 text-white py-5 rounded-2xl font-black uppercase tracking-widest">Login to Vault</Link>
+                  <Link to="/register" onClick={() => setIsOpen(false)} className="block w-full text-center bg-gold-500 text-emerald-950 py-5 rounded-2xl font-black uppercase tracking-widest shadow-2xl shadow-gold-500/20">Establish Membership</Link>
+                </div>
               )}
             </div>
           </div>

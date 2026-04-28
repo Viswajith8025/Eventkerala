@@ -56,6 +56,17 @@ const eventSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    bookingLink: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: function(v) {
+          if (!v) return true; // Optional
+          return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/.test(v);
+        },
+        message: 'Please provide a valid URL for the booking link'
+      }
+    },
     organizer: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
@@ -68,6 +79,10 @@ const eventSchema = new mongoose.Schema(
     analytics: {
         views: { type: Number, default: 0 },
         wishlists: { type: Number, default: 0 }
+    },
+    chatEnabled: {
+      type: Boolean,
+      default: false
     }
   },
 

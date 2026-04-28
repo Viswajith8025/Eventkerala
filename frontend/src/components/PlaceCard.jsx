@@ -3,8 +3,10 @@ import { motion } from 'framer-motion';
 import { MapPin, Camera, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import HeartButton from './HeartButton';
+import { useAuth } from '../context/AuthContext';
 
 const PlaceCard = ({ place, index = 0 }) => {
+  const { isLoggedIn } = useAuth();
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -50,9 +52,11 @@ const PlaceCard = ({ place, index = 0 }) => {
         </div>
 
         {/* Wishlist Button */}
-        <div className="absolute top-6 right-6">
-          <HeartButton item={place} type="place" />
-        </div>
+        {isLoggedIn && (
+          <div className="absolute top-6 right-6 z-50">
+            <HeartButton item={place} type="place" />
+          </div>
+        )}
       </div>
     </motion.div>
   );

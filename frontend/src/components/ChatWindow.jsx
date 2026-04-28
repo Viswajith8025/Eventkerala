@@ -34,8 +34,10 @@ const ChatWindow = ({ eventId, eventTitle }) => {
 
     fetchHistory();
 
-    // Initialize Socket
-    socketRef.current = io(API_URL.replace('/api/v1', ''));
+    // Initialize Socket with Auth Token
+    socketRef.current = io(API_URL.replace('/api/v1', ''), {
+      auth: { token }
+    });
 
     // Join isolated room
     socketRef.current.emit('join_room', {

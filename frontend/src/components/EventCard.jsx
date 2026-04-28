@@ -5,8 +5,10 @@ import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { MapPin, ArrowRight, Sparkles, CheckCircle, ScrollText, Calendar } from 'lucide-react';
 import HeartButton from './HeartButton';
 import { getImageUrl } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const EventCard = memo(({ event, index = 0 }) => {
+  const { isLoggedIn } = useAuth();
   const date = new Date(event.date);
   const formattedDate = date.toLocaleDateString('en-IN', {
     day: 'numeric',
@@ -96,9 +98,11 @@ const EventCard = memo(({ event, index = 0 }) => {
             </div>
           </div>
 
-          <div className="absolute top-5 right-5">
-            <HeartButton item={event} type="event" aria-label={`Add ${event.title} to wishlist`} />
-          </div>
+          {isLoggedIn && (
+            <div className="absolute top-5 right-5 z-50">
+              <HeartButton item={event} type="event" aria-label={`Add ${event.title} to wishlist`} />
+            </div>
+          )}
 
           <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-emerald-950/90 via-emerald-950/40 to-transparent">
             <div className="flex items-center gap-2 text-gold-500/80 text-xs font-black uppercase tracking-[0.2em] mb-2">
@@ -133,7 +137,7 @@ const EventCard = memo(({ event, index = 0 }) => {
             to={`/events/${event._id}`} 
             className="flex items-center justify-center w-full py-5 bg-emerald-950 text-gold-500 rounded-2xl font-black text-xs tracking-[0.3em] uppercase hover:bg-emerald-900 transition-all shadow-xl shadow-emerald-950/5 group/btn overflow-hidden relative"
           >
-             <span className="font-black text-xs tracking-[0.3em] uppercase">Enter the Legend</span>
+             <span className="font-black text-xs tracking-[0.3em] uppercase">View Event Details</span>
              <ArrowRight className="w-3 h-3 transform group-hover/btn:translate-x-1 transition-transform" />
            </Link>
          </div>

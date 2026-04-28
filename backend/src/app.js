@@ -10,7 +10,6 @@ const authRoutes = require('./routes/authRoutes');
 const placeRoutes = require('./routes/placeRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
-const paymentRoutes = require('./routes/paymentRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const userRoutes = require('./routes/userRoutes');
 
@@ -73,7 +72,6 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/places', placeRoutes);
 app.use('/api/v1/messages', messageRoutes);
 app.use('/api/v1/upload', uploadRoutes);
-app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/contact', contactRoutes);
 app.use('/api/v1/user', userRoutes);
 

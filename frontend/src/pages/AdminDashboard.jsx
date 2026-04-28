@@ -3,6 +3,8 @@ import { AlertCircle } from 'lucide-react';
 import api from '../services/api';
 import { io } from 'socket.io-client';
 
+import toast from 'react-hot-toast';
+
 // Sub-components
         import AdminHeader from '../components/admin/AdminHeader';
         import AdminEventTable from '../components/admin/AdminEventTable';
@@ -32,7 +34,8 @@ const AdminDashboard = () => {
   // Form State
   const [formData, setFormData] = useState({
     title: '', description: '', district: '', date: '', 
-    location: '', image: '', latitude: '', longitude: ''
+    location: '', image: '', latitude: '', longitude: '',
+    bookingLink: '', chatEnabled: false
   });
 
   const [placeFormData, setPlaceFormData] = useState({
@@ -89,7 +92,10 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
-    socketRef.current = io(API_URL.replace('/api/v1', ''));
+    const token = localStorage.getItem('token');
+    socketRef.current = io(API_URL.replace('/api/v1', ''), {
+      auth: { token }
+    });
 
     socketRef.current.on('connect', () => {
       socketRef.current.emit('join_room', { userId: 'admin', eventId: 'global' });
@@ -166,8 +172,11 @@ const AdminDashboard = () => {
      try {
        await api.put(`/events/${id}`, { status });
        setEvents(events.map(ev => ev._id === id ? { ...ev, status } : ev));
+       toast.success(`Legend status updated to ${status}`, {
+         style: { borderRadius: '1rem', background: '#064e3b', color: '#fbbf24' }
+       });
      } catch {
-       alert('Failed to update status.');
+       toast.error('Failed to update ritual status');
      }
   };
 
@@ -176,34 +185,67 @@ const AdminDashboard = () => {
      try {
        await api.delete(`/events/${id}`);
        setEvents(events.filter(ev => ev._id !== id));
+       toast.success('Event purged from chronicles');
      } catch {
-       alert('Failed to delete event.');
+       toast.error('Failed to delete event');
      }
+  };
+
+  const [editingEventId, setEditingEventId] = useState(null);
+
+  const handleEditClick = (event) => {
+    setFormData({
+      title: event.title,
+      description: event.description,
+      district: event.district,
+      date: event.date.split('T')[0],
+      location: event.location,
+      image: event.image,
+      latitude: event.latitude || '',
+      longitude: event.longitude || '',
+      bookingLink: event.bookingLink || '',
+      chatEnabled: event.chatEnabled || false
+    });
+    setEditingEventId(event._id);
+    setShowAddModal(true);
   };
 
   const handleCreateEvent = async (e) => {
     e.preventDefault();
-    if (!formData.image) return alert('Please upload an image first');
+    if (!formData.image) return toast.error('Please upload an image first');
+    
     try {
-      const response = await api.post('/events', { ...formData, status: 'approved' });
-      setEvents([response.data.data, ...events]);
+      if (editingEventId) {
+        // Update existing event
+        const response = await api.put(`/events/${editingEventId}/edit`, formData);
+        setEvents(events.map(ev => ev._id === editingEventId ? response.data.data : ev));
+        toast.success('Chronicle updated successfully');
+      } else {
+        // Create new event
+        const response = await api.post('/events', { ...formData, status: 'approved' });
+        setEvents([response.data.data, ...events]);
+        toast.success('New legend published successfully');
+      }
+      
       setShowAddModal(false);
-      setFormData({ title: '', description: '', district: '', date: '', location: '', image: '', latitude: '', longitude: '' });
+      setEditingEventId(null);
+      setFormData({ title: '', description: '', district: '', date: '', location: '', image: '', latitude: '', longitude: '', bookingLink: '', chatEnabled: false });
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to create event.');
+      toast.error(err.response?.data?.message || 'Action failed.');
     }
   };
 
   const handleCreatePlace = async (e) => {
     e.preventDefault();
-    if (!placeFormData.image) return alert('Please upload an image first');
+    if (!placeFormData.image) return toast.error('Please upload an image first');
     try {
       const response = await api.post('/places', placeFormData);
       setPlaces([response.data.data, ...places]);
       setShowAddPlaceModal(false);
       setPlaceFormData({ name: '', district: '', description: '', image: '', category: 'other' });
+      toast.success('Sacred place added to map');
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to create place.');
+      toast.error(err.response?.data?.message || 'Failed to create place.');
     }
   };
 
@@ -212,8 +254,9 @@ const AdminDashboard = () => {
      try {
        await api.delete(`/places/${id}`);
        setPlaces(places.filter(p => p._id !== id));
+       toast.success('Sanctuary removed from records');
      } catch {
-       alert('Failed to delete place.');
+       toast.error('Failed to delete place');
      }
   };
 
@@ -228,8 +271,9 @@ const AdminDashboard = () => {
         recipientId: selectedUserId
       });
       setReplyMessage('');
+      toast.success('Message sent to explorer');
     } catch (err) {
-      alert('Failed to send reply');
+      toast.error('Failed to send reply');
     }
   };
 
@@ -237,8 +281,9 @@ const AdminDashboard = () => {
      try {
        await api.put(`/contact/${id}/reply`, { reply });
        fetchContactMessages();
+       toast.success('Response sent successfully');
      } catch {
-       alert('Failed to send reply.');
+       toast.error('Failed to send inquiry response');
      }
   };
 
@@ -262,8 +307,14 @@ const AdminDashboard = () => {
         />
 
         <EventFormModal 
-          show={showAddModal} onClose={() => setShowAddModal(false)}
+          show={showAddModal} onClose={() => {
+            setShowAddModal(false);
+            setShowAddModal(false);
+            setEditingEventId(null);
+            setFormData({ title: '', description: '', district: '', date: '', location: '', image: '', latitude: '', longitude: '', bookingLink: '', chatEnabled: false });
+          }}
           formData={formData} setFormData={setFormData} onSubmit={handleCreateEvent}
+          isEdit={!!editingEventId}
         />
 
         <PlaceFormModal 
@@ -273,7 +324,12 @@ const AdminDashboard = () => {
 
         {activeTab === 'events' && (
           <div className="bg-white rounded-[3rem] border border-gray-100 shadow-2xl overflow-hidden">
-            <AdminEventTable events={filteredEvents} onStatusUpdate={handleStatusUpdate} onDelete={handleDeleteEvent} />
+            <AdminEventTable 
+              events={filteredEvents} 
+              onStatusUpdate={handleStatusUpdate} 
+              onDelete={handleDeleteEvent} 
+              onEdit={handleEditClick}
+            />
           </div>
         )}
 

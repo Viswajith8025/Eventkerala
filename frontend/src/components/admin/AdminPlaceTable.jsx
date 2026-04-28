@@ -22,7 +22,7 @@ const AdminPlaceTable = ({ places, searchTerm, onDelete }) => {
           <tr key={place._id} className="hover:bg-emerald-50/30 transition-all group">
             <td className="px-10 py-8">
               <div className="flex items-center gap-6">
-                <img src={place.image} alt="" className="w-16 h-16 rounded-[1.2rem] object-cover shadow-lg" loading="lazy" />
+                <img src={place.image} alt={place.name} className="w-16 h-16 rounded-[1.2rem] object-cover shadow-lg" loading="lazy" />
                 <div>
                   <p className="font-black text-gray-900 text-lg font-display tracking-tight">{place.name}</p>
                   <p className="text-xs text-gray-400 font-medium line-clamp-1 max-w-sm italic mt-1">{place.description}</p>

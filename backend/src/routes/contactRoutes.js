@@ -9,8 +9,9 @@ const {
 const router = express.Router();
 
 const { protect, authorize } = require('../middlewares/authMiddleware');
+const { apiLimiter } = require('../middlewares/rateLimit');
 
-router.post('/', submitContact);
+router.post('/', apiLimiter, submitContact);
 
 // Admin only routes
 router.use(protect);

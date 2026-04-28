@@ -29,9 +29,9 @@ export const AuthProvider = ({ children }) => {
             handleLogout();
           }
         }
-      } else if (storedUser) {
-        // Fallback for offline/cached user data if token is missing
-        setUser(JSON.parse(storedUser));
+      } else {
+        // No token found, clear any potentially stale user data
+        handleLogout();
       }
       setLoading(false);
     };
@@ -48,7 +48,12 @@ export const AuthProvider = ({ children }) => {
     window.dispatchEvent(new Event('authChange'));
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await api.get('/auth/logout');
+    } catch (err) {
+      console.warn('Backend logout cleanup skipped');
+    }
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setToken(null);

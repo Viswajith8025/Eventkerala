@@ -6,15 +6,18 @@ const ErrorResponse = require('../utils/errorResponse');
 // @route   POST /api/v1/contact
 // @access  Public
 exports.submitContact = asyncHandler(async (req, res, next) => {
-  console.log('Incoming contact submission:', req.body);
+  const { name, email, subject, message } = req.body;
+  
   try {
-    const contact = await Contact.create(req.body);
+    const contact = await Contact.create({
+      name, email, subject, message
+    });
+    
     res.status(201).json({
       success: true,
       data: contact
     });
   } catch (error) {
-    console.error('Contact creation error:', error);
     return next(new ErrorResponse(error.message, 400));
   }
 });

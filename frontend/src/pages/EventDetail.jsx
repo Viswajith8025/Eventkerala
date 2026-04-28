@@ -155,20 +155,36 @@ const EventDetail = () => {
               
               <div className="space-y-3 relative z-10">
                 <p className="text-xs text-gold-500/50 font-black uppercase tracking-[0.5em]">Entrance Details</p>
-                <h2 className="text-6xl font-display font-medium text-gold-500 leading-none">
-                  Free <br /><span className="text-3xl text-white italic">Access.</span>
-                </h2>
+                {event.bookingLink ? (
+                  <h2 className="text-5xl font-display font-medium text-gold-500 leading-tight">
+                    Official <br /><span className="text-3xl text-white italic">Booking Open.</span>
+                  </h2>
+                ) : (
+                  <h2 className="text-6xl font-display font-medium text-gold-500 leading-none">
+                    Free <br /><span className="text-3xl text-white italic">Access.</span>
+                  </h2>
+                )}
               </div>
 
               <div className="space-y-4 relative z-10">
+                {event.bookingLink && (
+                  <button
+                    onClick={() => window.open(event.bookingLink, '_blank')}
+                    className="w-full py-8 bg-gold-500 text-emerald-950 rounded-[2rem] font-black text-xs tracking-[0.4em] uppercase hover:bg-white hover:scale-105 transition-all shadow-2xl flex items-center justify-center gap-4 group"
+                  >
+                    Book Your Journey <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                  </button>
+                )}
+                
                 <button
                   onClick={handleDirections}
-                  className="w-full py-8 bg-gold-600 text-emerald-950 rounded-[2rem] font-black text-xs tracking-[0.4em] uppercase hover:bg-white hover:scale-105 transition-all shadow-2xl flex items-center justify-center gap-4 group"
+                  className={`w-full py-8 ${event.bookingLink ? 'bg-white/5 border border-white/10 text-white' : 'bg-gold-600 text-emerald-950'} rounded-[2rem] font-black text-xs tracking-[0.4em] uppercase hover:bg-white hover:text-emerald-950 hover:scale-105 transition-all shadow-2xl flex items-center justify-center gap-4 group`}
                 >
                   Navigate Now <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                 </button>
+                
                 <p className="text-[9px] text-white/30 text-center font-bold tracking-widest uppercase italic">
-                   No Reservation Required for Local Traditions
+                   {event.bookingLink ? 'Reservations via Official Partner Portal' : 'No Reservation Required for Local Traditions'}
                 </p>
               </div>
 
@@ -177,11 +193,17 @@ const EventDetail = () => {
                     <div className="w-2 h-2 rounded-full bg-gold-500 animate-pulse"></div>
                     <span className="text-xs font-black uppercase tracking-widest text-white/60">Community Verified</span>
                  </div>
-                 <p className="text-xs text-white/40 leading-relaxed font-medium">This heritage event is open to all seekers of culture. Please respect local customs and sacred traditions during your visit.</p>
+                 <p className="text-xs text-white/40 leading-relaxed font-medium">
+                   {event.bookingLink 
+                     ? 'Ticketing is managed by the respected event organizers. Ensure you carry your confirmation for entry.'
+                     : 'This heritage event is open to all seekers of culture. Please respect local customs and sacred traditions during your visit.'}
+                 </p>
               </div>
             </div>
 
-            <ChatWindow eventId={event._id} eventTitle={event.title} />
+            {event.chatEnabled && (
+              <ChatWindow eventId={event._id} eventTitle={event.title} />
+            )}
           </div>
         </div>
       </div>

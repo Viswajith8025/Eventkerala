@@ -4,6 +4,7 @@ import { Upload, MapPin, Calendar, ScrollText, Sparkles, AlertCircle, CheckCircl
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import ImageUpload from '../components/ImageUpload';
 
 const CreateEvent = () => {
     const [formData, setFormData] = useState({
@@ -13,7 +14,8 @@ const CreateEvent = () => {
         date: '',
         location: '',
         category: 'Temple Festivals',
-        price: 0
+        price: 0,
+        bookingLink: ''
     });
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -25,6 +27,11 @@ const CreateEvent = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.image) {
+            return toast.error('A visual chronicle is required. Please upload an image.', {
+                style: { background: '#991b1b', color: '#fff', borderRadius: '1rem' }
+            });
+        }
         setLoading(true);
         try {
             const response = await api.post('/events', formData);
@@ -92,25 +99,31 @@ const CreateEvent = () => {
                                     onChange={handleChange}
                                     className="w-full bg-white border border-emerald-900/5 rounded-2xl px-8 py-5 text-sm focus:outline-none focus:border-gold-500/50 shadow-xl shadow-emerald-900/5" 
                                 />
-                                <div className="grid grid-cols-2 gap-4">
-                                    <select 
-                                        name="category"
-                                        onChange={handleChange}
-                                        className="bg-white border border-emerald-900/5 rounded-2xl px-6 py-5 text-sm text-emerald-950/60 font-medium"
-                                    >
-                                        <option>Temple Festivals</option>
-                                        <option>Sacred Rituals</option>
-                                        <option>Art Forms</option>
-                                        <option>Heritage Sites</option>
-                                    </select>
                                     <input 
-                                        name="price"
-                                        type="number"
-                                        placeholder="Entry Fee (0 for Free)" 
+                                        name="bookingLink"
+                                        placeholder="Booking Portal URL (Optional)" 
                                         onChange={handleChange}
-                                        className="bg-white border border-emerald-900/5 rounded-2xl px-8 py-5 text-sm focus:outline-none focus:border-gold-500/50 shadow-xl shadow-emerald-900/5" 
+                                        className="w-full bg-white border border-emerald-900/5 rounded-2xl px-8 py-5 text-sm focus:outline-none focus:border-gold-500/50 shadow-xl shadow-emerald-900/5" 
                                     />
-                                </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <select 
+                                            name="category"
+                                            onChange={handleChange}
+                                            className="bg-white border border-emerald-900/5 rounded-2xl px-6 py-5 text-sm text-emerald-950/60 font-medium"
+                                        >
+                                            <option>Temple Festivals</option>
+                                            <option>Sacred Rituals</option>
+                                            <option>Art Forms</option>
+                                            <option>Heritage Sites</option>
+                                        </select>
+                                        <input 
+                                            name="price"
+                                            type="number"
+                                            placeholder="Entry Fee (0 for Free)" 
+                                            onChange={handleChange}
+                                            className="bg-white border border-emerald-900/5 rounded-2xl px-8 py-5 text-sm focus:outline-none focus:border-gold-500/50 shadow-xl shadow-emerald-900/5" 
+                                        />
+                                    </div>
                             </div>
                         </div>
 
@@ -161,15 +174,14 @@ const CreateEvent = () => {
                             ></textarea>
                         </div>
 
-                        {/* Visuals Mockup */}
-                        <div className="p-12 border-2 border-dashed border-emerald-900/10 rounded-[3rem] flex flex-col items-center justify-center text-center space-y-6 hover:bg-emerald-900/5 transition-all cursor-pointer group">
-                            <div className="w-20 h-20 bg-emerald-900/5 rounded-full flex items-center justify-center group-hover:bg-gold-500 transition-colors">
-                                <Upload className="w-10 h-10 text-emerald-900 group-hover:text-emerald-950" />
-                            </div>
-                            <div className="space-y-2">
-                                <p className="text-sm font-black text-emerald-950 uppercase tracking-widest">Upload Heritage Scills</p>
-                                <p className="text-xs text-emerald-900/40 font-medium">Max size 5MB. Cinematic shots preferred.</p>
-                            </div>
+                        {/* Functional Image Upload */}
+                        <div className="space-y-6">
+                            <h3 className="text-xl font-display text-emerald-950 flex items-center gap-3">
+                                <Upload className="w-5 h-5 text-gold-500" /> Visual Archive
+                            </h3>
+                            <ImageUpload 
+                                onUploadSuccess={(url) => setFormData(prev => ({ ...prev, image: url }))} 
+                            />
                         </div>
 
                         <button 
