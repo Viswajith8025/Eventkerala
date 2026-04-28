@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    phone: '',
     subject: 'General Inquiry',
     message: ''
   });
@@ -28,7 +28,7 @@ const Contact = () => {
           fontWeight: 'bold'
         }
       });
-      setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
+      setFormData({ name: '', phone: '', subject: 'General Inquiry', message: '' });
     } catch (err) {
       console.error('Submission error:', err.response?.data || err.message);
       const errorDetail = err.response?.data?.error || err.message;
@@ -125,13 +125,13 @@ const Contact = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-emerald-900/40 ml-1">Email</label>
+                  <label className="text-xs font-black uppercase tracking-widest text-emerald-900/40 ml-1">WhatsApp Number</label>
                   <input 
-                    type="email" required
+                    type="tel" required
                     className="w-full bg-emerald-900/5 border-transparent focus:bg-white focus:border-emerald-950 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl py-4 px-6 transition-all text-emerald-950 font-medium" 
-                    placeholder="aromal@example.com" 
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    placeholder="+91 98765 43210" 
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
                   />
                 </div>
               </div>

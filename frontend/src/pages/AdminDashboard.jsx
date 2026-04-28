@@ -153,10 +153,17 @@ const AdminDashboard = () => {
 
   const activeEventUsers = useMemo(() => {
     if (!selectedEventId) return [];
-    const eventMessages = messages.filter(m => m.event?._id === selectedEventId || m.event === selectedEventId);
+    
+    let filteredMessages;
+    if (selectedEventId === 'support') {
+      filteredMessages = messages.filter(m => m.room === 'support');
+    } else {
+      filteredMessages = messages.filter(m => (m.event?._id === selectedEventId || m.event === selectedEventId) && m.room !== 'support');
+    }
+
     const usersMap = new Map();
     
-    eventMessages.forEach(m => {
+    filteredMessages.forEach(m => {
       const isUser = !m.senderName.toLowerCase().includes('admin');
       const userId = isUser ? m.sender : m.recipient;
       
@@ -171,18 +178,37 @@ const AdminDashboard = () => {
     return Array.from(usersMap.values()).sort((a,b) => new Date(b.lastMessage.createdAt) - new Date(a.lastMessage.createdAt));
   }, [messages, selectedEventId]);
 
-  const eventThreads = Array.from(new Set(messages
-    .filter(m => m.event?._id || m.event)
-    .map(m => m.event?._id || m.event)
-  )).map(eventId => {
-    const threadMessages = messages.filter(m => (m.event?._id || m.event) === eventId);
-    return {
-      eventId,
-      eventTitle: threadMessages[0].event?.title || 'Event Channel',
-      lastMessage: threadMessages[0],
-      unreadCount: 0 
-    };
-  });
+  const eventThreads = useMemo(() => {
+    const threads = [];
+    
+    // Add Support Thread if messages exist
+    if (messages.some(m => m.room === 'support')) {
+      threads.push({
+        eventId: 'support',
+        eventTitle: 'Heritage Support',
+        lastMessage: messages.find(m => m.room === 'support'),
+        unreadCount: 0
+      });
+    }
+
+    // Add Event Threads
+    const uniqueEventIds = Array.from(new Set(messages
+      .filter(m => (m.event?._id || m.event) && m.room !== 'support')
+      .map(m => m.event?._id || m.event)
+    ));
+
+    uniqueEventIds.forEach(eventId => {
+      const threadMessages = messages.filter(m => (m.event?._id || m.event) === eventId);
+      threads.push({
+        eventId,
+        eventTitle: threadMessages[0].event?.title || 'Event Channel',
+        lastMessage: threadMessages[0],
+        unreadCount: 0
+      });
+    });
+
+    return threads;
+  }, [messages]);
 
   const handleStatusUpdate = async (id, status) => {
      try {
@@ -280,11 +306,14 @@ const AdminDashboard = () => {
     e.preventDefault();
     if (!replyMessage.trim()) return;
     try {
+      const room = selectedEventId === 'support' ? 'support' : 'global';
+      
       await api.post('/messages', {
-        event: selectedEventId,
+        event: selectedEventId === 'support' ? null : selectedEventId,
         content: replyMessage,
         senderName: 'LiveKeralam Admin',
-        recipientId: selectedUserId
+        recipientId: selectedUserId,
+        room
       });
       setReplyMessage('');
       toast.success('Message sent to explorer');

@@ -1,4 +1,5 @@
 const Contact = require('../models/Contact');
+const Message = require('../models/Message');
 const asyncHandler = require('../utils/catchAsync');
 const ErrorResponse = require('../utils/errorResponse');
 
@@ -6,14 +7,18 @@ const ErrorResponse = require('../utils/errorResponse');
 // @route   POST /api/v1/contact
 // @access  Public
 exports.submitContact = asyncHandler(async (req, res, next) => {
-  const { name, email, subject, message } = req.body;
+  const { name, email, phone, subject, message } = req.body;
   
   try {
-    const contactData = { name, email, subject, message };
+    const contactData = { name, phone, subject, message };
     
-    // If user is logged in (via optionalProtect), link the message
+    // Use provided email or fallback to logged in user email
+    if (email) contactData.email = email;
+    
+    // If user is logged in (via optionalProtect), link the message and get their email
     if (req.user) {
       contactData.user = req.user.id;
+      if (!contactData.email) contactData.email = req.user.email;
     }
 
     const contact = await Contact.create(contactData);
@@ -63,6 +68,27 @@ exports.replyToContact = asyncHandler(async (req, res, next) => {
       runValidators: true
     }
   );
+
+  // If this contact was linked to a user, start a real-time support message thread
+  if (contact.user) {
+    const message = await Message.create({
+      room: 'support',
+      sender: req.user.id,
+      senderName: 'LiveKeralam Admin',
+      content: reply,
+      recipient: contact.user
+    });
+
+    // Real-time socket emission for support
+    const io = req.app.get('socketio');
+    if (io) {
+      const socketRoom = `support:${contact.user}`;
+      io.to(socketRoom).emit('receive_message', {
+        ...message._doc,
+        room: 'support'
+      });
+    }
+  }
 
   res.status(200).json({
     success: true,

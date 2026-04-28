@@ -194,7 +194,10 @@ const AdminMessaging = ({
                 <td className="px-10 py-8">
                   <div>
                     <p className="font-black text-gray-900">{contact.name}</p>
-                    <p className="text-xs text-gray-400 font-medium">{contact.email}</p>
+                    <div className="flex flex-col gap-1 mt-1">
+                      <p className="text-[10px] text-emerald-900 font-black uppercase tracking-widest">{contact.phone}</p>
+                      <p className="text-[10px] text-gray-400 font-bold">{contact.email}</p>
+                    </div>
                   </div>
                 </td>
                 <td className="px-10 py-8">

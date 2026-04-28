@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Mail, Phone, Sparkles, Save, Shield, MapPin, Heart, ChevronRight, Check, Camera, Loader2 } from 'lucide-react';
+import { User, Mail, Phone, Sparkles, Save, Shield, MapPin, Heart, ChevronRight, Check, Camera, Loader2, MessageSquare, ShieldCheck } from 'lucide-react';
+import SupportChat from '../components/SupportChat';
 import { getImageUrl } from '../services/api';
 import api from '../services/api';
 import toast from 'react-hot-toast';
@@ -57,6 +58,7 @@ const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [enquiries, setEnquiries] = useState([]);
+    const [showChat, setShowChat] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -303,57 +305,38 @@ const Profile = () => {
                             </div>
                         </section>
 
-                        {/* Support History */}
-                        <section className="space-y-10 py-16 border-t border-emerald-950/5">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <span className="text-[10px] font-black text-emerald-900/30 uppercase tracking-[0.4em]">Feedback Loop</span>
-                                    <h3 className="text-3xl font-display text-emerald-950 italic">Enquiry <span className="text-gold-600">History.</span></h3>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-2xl font-display text-emerald-950">{enquiries.length}</span>
-                                    <span className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest">Stories</span>
-                                </div>
-                            </div>
-
-                            {enquiries.length > 0 ? (
-                                <div className="grid grid-cols-1 gap-6">
-                                    {enquiries.map((enq) => (
-                                        <div key={enq._id} className="bg-white border border-emerald-900/5 rounded-[2rem] p-8 shadow-sm hover:shadow-md transition-all group">
-                                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                                                <div className="space-y-1">
-                                                    <span className="text-[10px] font-black text-gold-600 uppercase tracking-widest">{enq.subject}</span>
-                                                    <p className="text-[10px] text-emerald-900/30 font-bold uppercase tracking-widest">{new Date(enq.createdAt).toLocaleDateString()}</p>
-                                                </div>
-                                                <span className={`self-start md:self-auto px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
-                                                    enq.status === 'replied' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
-                                                }`}>
-                                                    {enq.status}
-                                                </span>
+                        {/* Heritage Support Chat */}
+                        {enquiries.some(enq => enq.status === 'replied') && (
+                            <section className="py-16 border-t border-emerald-950/5">
+                                <div className="bg-emerald-900 rounded-[3rem] p-10 md:p-14 relative overflow-hidden shadow-2xl shadow-emerald-900/40">
+                                    {/* Decorative patterns */}
+                                    <div className="absolute top-0 right-0 w-64 h-64 bg-gold-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+                                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-500/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
+                                    
+                                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
+                                        <div className="space-y-4 text-center md:text-left">
+                                            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-gold-500/10 border border-gold-500/20 rounded-full">
+                                                <ShieldCheck className="w-3.5 h-3.5 text-gold-500" />
+                                                <span className="text-[10px] font-black text-gold-500 uppercase tracking-widest">Active Guardians Line</span>
                                             </div>
-                                            <div className="p-6 bg-emerald-900/[0.02] rounded-2xl border border-emerald-900/5 mb-6">
-                                                <p className="text-sm text-emerald-950 font-medium leading-relaxed italic opacity-70">"{enq.message}"</p>
-                                            </div>
-                                            {enq.adminReply && (
-                                                <div className="space-y-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-1.5 h-6 bg-gold-500 rounded-full"></div>
-                                                        <span className="text-[10px] font-black text-emerald-950 uppercase tracking-widest">Chronicle Admin Response</span>
-                                                    </div>
-                                                    <div className="p-6 bg-gold-500/5 border border-gold-500/10 rounded-2xl">
-                                                        <p className="text-sm text-emerald-950 font-bold leading-relaxed">{enq.adminReply}</p>
-                                                    </div>
-                                                </div>
-                                            )}
+                                            <h3 className="text-4xl font-display text-white italic">Heritage <span className="text-gold-500">Support.</span></h3>
+                                            <p className="text-emerald-100/60 font-medium max-w-md leading-relaxed">The guardians have responded to your enquiry. Step into the private chambers for a real-time dialogue.</p>
                                         </div>
-                                    ))}
+                                        
+                                        <button 
+                                            onClick={() => setShowChat(true)}
+                                            className="group flex items-center gap-4 px-10 py-5 bg-gold-500 text-emerald-950 rounded-2xl font-black text-xs tracking-widest uppercase hover:bg-white transition-all shadow-xl shadow-gold-500/20"
+                                        >
+                                            <MessageSquare className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                            Enter Portal
+                                            <ChevronRight className="w-4 h-4" />
+                                        </button>
+                                    </div>
                                 </div>
-                            ) : (
-                                <div className="p-12 bg-emerald-900/[0.02] border border-dashed border-emerald-900/10 rounded-[2.5rem] text-center">
-                                    <p className="text-emerald-900/30 font-bold uppercase tracking-widest text-xs italic">Your journey has been smooth. No enquiries logged yet.</p>
-                                </div>
-                            )}
-                        </section>
+                            </section>
+                        )}
+
+                        {showChat && <SupportChat user={user} onClose={() => setShowChat(false)} />}
 
                         <section className="pt-16 border-t border-emerald-950/5">
                             <div className="bg-red-50/50 rounded-[3rem] p-12 border border-red-100/50 flex flex-col md:flex-row items-center justify-between gap-8">

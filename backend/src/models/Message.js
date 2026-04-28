@@ -5,7 +5,11 @@ const messageSchema = new mongoose.Schema(
     event: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Event',
-      required: true,
+      required: false,
+    },
+    room: {
+      type: String, // 'support' or 'event_id'
+      default: 'global'
     },
     sender: {
       type: mongoose.Schema.Types.ObjectId,
