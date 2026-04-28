@@ -102,22 +102,22 @@ const ChatWindow = ({ eventId, eventTitle }) => {
   return (
     <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 flex flex-col h-[600px] overflow-hidden">
       {/* Header */}
-      <div className="p-6 bg-indigo-600 text-white">
+      <div className="p-6 bg-emerald-950 text-white border-b border-white/5">
         <h3 className="text-lg font-bold font-display flex items-center gap-2">
-          Organised Chat: {eventTitle}
+          Organised Chat: <span className="text-gold-500 italic">{eventTitle}</span>
         </h3>
-        <p className="text-xs text-indigo-100 mt-1">Connect with the community and organizers</p>
+        <p className="text-xs text-white/40 mt-1 uppercase tracking-widest font-black">Community Discussion Chamber</p>
       </div>
 
       {/* Messages area */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/30">
         {loading ? (
           <div className="flex justify-center py-10">
-            <Loader2 className="animate-spin text-indigo-600 w-8 h-8" />
+            <Loader2 className="animate-spin text-emerald-900 w-8 h-8" />
           </div>
         ) : messages.length === 0 ? (
           <div className="text-center py-10 opacity-40">
-            <p className="text-sm font-medium">No messages yet. Start the conversation!</p>
+            <p className="text-sm font-medium italic">No messages in this chronicle yet.</p>
           </div>
         ) : (
           messages.map((msg, index) => (
@@ -126,21 +126,21 @@ const ChatWindow = ({ eventId, eventTitle }) => {
               className={`flex flex-col ${msg.senderName === user.name ? 'items-end' : 'items-start'}`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <span className={`text-xs font-bold uppercase tracking-tighter ${msg.senderName.includes('Admin') ? 'text-amber-600' : 'text-gray-400'}`}>
+                <span className={`text-[10px] font-black uppercase tracking-tighter ${msg.senderName.toLowerCase().includes('admin') ? 'text-gold-600' : 'text-gray-400'}`}>
                   {msg.senderName}
-                  {msg.senderName.includes('Admin') && <span className="ml-1 bg-amber-500 text-white px-1.5 py-0.5 rounded-full text-[8px]">OFFICIAL</span>}
+                  {msg.senderName.toLowerCase().includes('admin') && <span className="ml-1 bg-emerald-900 text-white px-1.5 py-0.5 rounded-full text-[8px]">OFFICIAL</span>}
                 </span>
               </div>
-              <div className={`px-4 py-2.5 rounded-2xl max-w-[80%] text-sm font-medium shadow-sm ${
+              <div className={`px-5 py-3 rounded-2xl max-w-[85%] text-sm font-medium shadow-sm ${
                 msg.senderName === user.name
-                  ? 'bg-indigo-600 text-white rounded-tr-none'
-                  : msg.senderName.includes('Admin')
-                    ? 'bg-amber-50 text-emerald-950 border-2 border-amber-500/20 rounded-tl-none font-bold'
+                  ? 'bg-emerald-900 text-white rounded-tr-none'
+                  : msg.senderName.toLowerCase().includes('admin')
+                    ? 'bg-gold-50 text-emerald-950 border border-gold-500/20 rounded-tl-none font-bold'
                     : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
                 }`}>
                 {msg.content}
               </div>
-              <span className="text-[8px] text-gray-400 mt-1">
+              <span className="text-[8px] font-black text-gray-300 mt-1 uppercase">
                 {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             </div>
@@ -154,14 +154,14 @@ const ChatWindow = ({ eventId, eventTitle }) => {
         <div className="relative flex items-center">
           <input
             type="text"
-            placeholder="Type your message..."
-            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 pr-16 text-sm font-medium focus:ring-2 focus:ring-indigo-100 transition-all"
+            placeholder="Share your heritage experience..."
+            className="w-full bg-gray-50 border-transparent rounded-2xl px-6 py-4 pr-16 text-sm font-medium focus:ring-4 focus:ring-emerald-950/5 focus:bg-white focus:border-emerald-900 transition-all"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
           />
           <button
             type="submit"
-            className="absolute right-2 p-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
+            className="absolute right-2 p-3 bg-emerald-950 text-gold-500 rounded-xl hover:scale-105 transition-all shadow-lg shadow-emerald-900/10"
           >
             <Send className="w-4 h-4" />
           </button>
