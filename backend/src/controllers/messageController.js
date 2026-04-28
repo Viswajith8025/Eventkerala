@@ -68,11 +68,20 @@ exports.saveMessage = async (req, res, next) => {
   try {
     const { event, content, senderName, recipientId, room = 'global' } = req.body;
     
+    let finalRecipientId = recipientId;
+
+    // Handle 'admin' reserved keyword for support
+    if (recipientId === 'admin') {
+      const User = require('../models/User');
+      const admin = await User.findOne({ role: 'admin' });
+      finalRecipientId = admin ? admin._id : null;
+    }
+
     const messageData = {
       sender: req.user.id,
       content,
       senderName,
-      recipient: recipientId,
+      recipient: finalRecipientId,
       room
     };
 
@@ -88,6 +97,7 @@ exports.saveMessage = async (req, res, next) => {
     // Handle real-time emission
     const io = req.app.get('socketio');
     if (io) {
+      // For socket room, we use the user's ID (the non-admin party)
       const targetUserId = req.user.role === 'admin' ? recipientId : req.user.id;
       
       let socketRoom;
