@@ -24,189 +24,184 @@ const AdminMessaging = ({
       {(activeMessageSubTab === 'chats' || activeMessageSubTab === 'support') ? (
         <div className="flex bg-white h-[650px]">
           {/* Conversations Sidebar */}
-          <div className="w-1/3 border-r border-gray-100 flex flex-col bg-gray-50/30">
-            <div className="p-6 border-b border-gray-100 bg-white flex items-center justify-between">
+          <div className="w-1/3 border-r border-gray-100 flex flex-col bg-white">
+            <div className="p-6 border-b border-gray-100 bg-[#f0f2f5] flex items-center justify-between">
               <h3 className="font-black text-gray-900 font-display flex items-center gap-2">
                  <MessageSquare className="w-4 h-4 text-emerald-900" />
-                 {activeMessageSubTab === 'support' ? 'Support Threads' : (selectedEventId ? 'User Threads' : 'Event Channels')}
+                 {activeMessageSubTab === 'support' ? 'Support' : 'Channels'}
               </h3>
               {(selectedEventId && activeMessageSubTab === 'chats') && (
                 <button 
                   onClick={() => { setSelectedEventId(null); setSelectedUserId(null); }}
-                  className="text-xs font-black text-emerald-900 uppercase tracking-widest hover:underline"
+                  className="text-[10px] font-black text-emerald-900 uppercase tracking-widest bg-white px-3 py-1.5 rounded-lg shadow-sm hover:bg-emerald-50 transition-all"
                 >
-                  All Channels
+                  Back
                 </button>
               )}
             </div>
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto no-scrollbar">
               {activeMessageSubTab === 'support' ? (
                 // Support Specific Logic
                 eventThreads.filter(t => t.eventId === 'support').length === 0 ? (
                   <div className="p-10 text-center opacity-30">
-                    <p className="text-xs font-bold uppercase tracking-widest">No active support threads</p>
+                    <p className="text-xs font-bold uppercase tracking-widest">No support tickets</p>
                   </div>
                 ) : (
-                  // For support, we go straight to users list for the 'support' virtual event
-                  activeEventUsers.length === 0 && selectedEventId !== 'support' ? (
-                    // If support selectedEventId is not set, set it automatically if support threads exist
-                    <div className="p-10 text-center">
-                       <button 
-                        onClick={() => setSelectedEventId('support')}
-                        className="text-xs font-black text-emerald-900 underline uppercase tracking-widest"
-                       >
-                         Initialize Support Line
-                       </button>
-                    </div>
-                  ) : (
-                    activeEventUsers.map(userThread => (
-                      <button 
-                        key={userThread.id}
-                        onClick={() => setSelectedUserId(userThread.id)}
-                        className={`w-full p-6 text-left flex items-start gap-4 transition-all hover:bg-white border-b border-gray-100/50 ${selectedUserId === userThread.id ? 'bg-white border-l-4 border-l-emerald-900' : ''}`}
-                      >
-                        <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-900 font-black text-xs shrink-0">
-                           <Users className="w-5 h-5" />
+                  activeEventUsers.map(userThread => (
+                    <button 
+                      key={userThread.id}
+                      onClick={() => setSelectedUserId(userThread.id)}
+                      className={`w-full p-4 text-left flex items-center gap-4 transition-all hover:bg-[#f5f6f6] border-b border-gray-50 ${selectedUserId === userThread.id ? 'bg-[#f0f2f5]' : ''}`}
+                    >
+                      <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-900 font-black text-xs shrink-0 shadow-inner">
+                         <Users className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-center mb-0.5">
+                          <h4 className="font-bold text-gray-900 text-sm truncate">{userThread.name}</h4>
+                          <span className={`text-[10px] font-medium ${selectedUserId === userThread.id ? 'text-emerald-600' : 'text-gray-400'}`}>
+                            {new Date(userThread.lastMessage.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                          </span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-start mb-1">
-                            <h4 className="font-black text-gray-900 text-sm truncate">{userThread.name}</h4>
-                            <span className="text-[8px] font-black text-gray-400 uppercase">{new Date(userThread.lastMessage.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                          </div>
-                          <p className="text-xs text-gray-500 line-clamp-1 font-medium">{userThread.lastMessage.content}</p>
-                        </div>
-                      </button>
-                    ))
-                  )
+                        <p className="text-xs text-gray-500 line-clamp-1 font-medium">{userThread.lastMessage.content}</p>
+                      </div>
+                    </button>
+                  ))
                 )
               ) : (
                 // Event Chats Logic
                 !selectedEventId ? (
-                  eventThreads.filter(t => t.eventId !== 'support').length === 0 ? (
-                    <div className="p-10 text-center opacity-30">
-                      <p className="text-xs font-bold uppercase tracking-widest">No active channels</p>
-                    </div>
-                  ) : (
-                    eventThreads.filter(t => t.eventId !== 'support').map(thread => (
-                      <button 
-                        key={thread.eventId}
-                        onClick={() => setSelectedEventId(thread.eventId)}
-                        className={`w-full p-6 text-left flex items-start gap-4 transition-all hover:bg-white border-b border-gray-100/50 ${selectedEventId === thread.eventId ? 'bg-white border-l-4 border-l-emerald-900' : ''}`}
-                      >
-                        <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-900 font-black text-xs shrink-0">
-                           {thread.eventTitle[0]?.toUpperCase()}
+                  eventThreads.filter(t => t.eventId !== 'support').map(thread => (
+                    <button 
+                      key={thread.eventId}
+                      onClick={() => setSelectedEventId(thread.eventId)}
+                      className={`w-full p-4 text-left flex items-center gap-4 transition-all hover:bg-[#f5f6f6] border-b border-gray-50 ${selectedEventId === thread.eventId ? 'bg-[#f0f2f5]' : ''}`}
+                    >
+                      <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-900 font-black text-sm shrink-0 border border-emerald-100">
+                         {thread.eventTitle[0]?.toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-center">
+                          <h4 className="font-bold text-gray-900 text-sm truncate">{thread.eventTitle}</h4>
+                          <span className="text-[10px] font-black text-emerald-900/20 tracking-tighter">OPEN</span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-start mb-1">
-                            <h4 className="font-black text-gray-900 text-sm truncate">{thread.eventTitle}</h4>
-                          </div>
-                          <p className="text-xs text-gray-400 font-bold uppercase">Click to see users</p>
-                        </div>
-                      </button>
-                    ))
-                  )
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">View Participants</p>
+                      </div>
+                    </button>
+                  ))
                 ) : (
-                  activeEventUsers.length === 0 ? (
-                    <div className="p-10 text-center opacity-30">
-                      <p className="text-xs font-bold uppercase tracking-widest">No user threads</p>
-                    </div>
-                  ) : (
-                    activeEventUsers.map(userThread => (
-                      <button 
-                        key={userThread.id}
-                        onClick={() => setSelectedUserId(userThread.id)}
-                        className={`w-full p-6 text-left flex items-start gap-4 transition-all hover:bg-white border-b border-gray-100/50 ${selectedUserId === userThread.id ? 'bg-white border-l-4 border-l-emerald-900' : ''}`}
-                      >
-                        <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-900 font-black text-xs shrink-0">
-                           <Users className="w-5 h-5" />
+                  activeEventUsers.map(userThread => (
+                    <button 
+                      key={userThread.id}
+                      onClick={() => setSelectedUserId(userThread.id)}
+                      className={`w-full p-4 text-left flex items-center gap-4 transition-all hover:bg-[#f5f6f6] border-b border-gray-50 ${selectedUserId === userThread.id ? 'bg-[#f0f2f5]' : ''}`}
+                    >
+                      <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-900 font-black text-xs shrink-0 shadow-inner">
+                         <Users className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-center mb-0.5">
+                          <h4 className="font-bold text-gray-900 text-sm truncate">{userThread.name}</h4>
+                          <span className={`text-[10px] font-medium ${selectedUserId === userThread.id ? 'text-emerald-600' : 'text-gray-400'}`}>
+                            {new Date(userThread.lastMessage.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                          </span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-start mb-1">
-                            <h4 className="font-black text-gray-900 text-sm truncate">{userThread.name}</h4>
-                            <span className="text-[8px] font-black text-gray-400 uppercase">{new Date(userThread.lastMessage.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                          </div>
-                          <p className="text-xs text-gray-500 line-clamp-1 font-medium">{userThread.lastMessage.content}</p>
-                        </div>
-                      </button>
-                    ))
-                  )
+                        <p className="text-xs text-gray-500 line-clamp-1 font-medium">{userThread.lastMessage.content}</p>
+                      </div>
+                    </button>
+                  ))
                 )
               )}
             </div>
           </div>
 
           {/* Chat Window */}
-          <div className="flex-1 flex flex-col bg-white">
+          <div className="flex-1 flex flex-col bg-[#efeae2]">
             {selectedUserId ? (
               <>
                 {/* Thread Header */}
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white shadow-sm z-10">
+                <div className="p-4 bg-[#f0f2f5] border-b border-gray-200 flex items-center justify-between z-10">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-900 flex items-center justify-center text-white font-black text-xs">
+                    <div className="w-10 h-10 rounded-full bg-emerald-900 flex items-center justify-center text-white">
                        {selectedEventId === 'support' ? <ShieldCheck className="w-5 h-5 text-gold-500" /> : <Users className="w-5 h-5" />}
                     </div>
                     <div>
-                      <h4 className="font-black text-gray-900">{activeEventUsers.find(u => u.id === selectedUserId)?.name || 'Private Chat'}</h4>
-                      <p className="text-[8px] text-emerald-800 font-black uppercase tracking-widest flex items-center gap-1">
-                         {selectedEventId === 'support' ? (
-                           <>
-                             <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                             Secure Heritage Support Line
-                           </>
-                         ) : (
-                           `Thread on: ${eventThreads.find(t => t.eventId === selectedEventId)?.eventTitle}`
-                         )}
+                      <h4 className="font-bold text-gray-900 text-sm">{activeEventUsers.find(u => u.id === selectedUserId)?.name || 'Private Chat'}</h4>
+                      <p className="text-[10px] text-emerald-800 font-black uppercase tracking-widest flex items-center gap-1">
+                         {selectedEventId === 'support' ? 'Verified Support Line' : `Event: ${eventThreads.find(t => t.eventId === selectedEventId)?.eventTitle}`}
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-gray-50/20">
+                <div className="flex-1 overflow-y-auto p-6 space-y-2 chat-bg scroll-smooth">
                   {messages.filter(m => {
                     if (selectedEventId === 'support') {
                       return m.room === 'support' && (m.sender === selectedUserId || m.recipient === selectedUserId);
                     }
                     return (m.event?._id === selectedEventId || m.event === selectedEventId) && 
                            (m.sender === selectedUserId || m.recipient === selectedUserId || (m.senderName.toLowerCase().includes('admin') && m.recipient === selectedUserId));
-                  }).slice().reverse().map((msg, idx) => (
-                    <div key={msg._id || idx} className={`flex flex-col ${msg.senderName.toLowerCase().includes('admin') ? 'items-end' : 'items-start'}`}>
-                      <div className="flex items-center gap-2 mb-1.5 px-1">
-                        <span className={`text-xs font-black uppercase tracking-tighter ${msg.senderName.toLowerCase().includes('admin') ? 'text-emerald-900' : 'text-gray-400'}`}>
-                          {msg.senderName}
-                          {msg.senderName.toLowerCase().includes('admin') && <span className="ml-1.5 bg-emerald-900 text-white px-1.5 py-0.5 rounded-full text-[8px]">OFFICIAL</span>}
-                        </span>
+                  }).slice().reverse().reduce((acc, msg, index, arr) => {
+                    const messageDate = new Date(msg.createdAt).toLocaleDateString();
+                    const nextMessageDate = index < arr.length - 1 ? new Date(arr[index + 1].createdAt).toLocaleDateString() : null;
+                    
+                    if (messageDate !== nextMessageDate) {
+                      const today = new Date().toLocaleDateString();
+                      const yesterday = new Date(Date.now() - 86400000).toLocaleDateString();
+                      let displayDate = messageDate;
+                      if (messageDate === today) displayDate = 'TODAY';
+                      else if (messageDate === yesterday) displayDate = 'YESTERDAY';
+
+                      acc.push(
+                        <div key={`date-${messageDate}`} className="flex justify-center my-4">
+                          <span className="bg-white/90 backdrop-blur-sm text-[#54656f] text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-lg shadow-sm border border-gray-100">
+                            {displayDate}
+                          </span>
+                        </div>
+                      );
+                    }
+
+                    const isAdmin = msg.senderName.toLowerCase().includes('admin');
+                    acc.push(
+                      <div key={msg._id || index} className={`flex flex-col ${isAdmin ? 'items-end' : 'items-start'} mb-1`}>
+                        <div className={`bubble ${isAdmin ? 'bubble-out' : 'bubble-in'}`}>
+                           <div className="text-sm leading-relaxed pr-10">
+                              {msg.content}
+                           </div>
+                           <div className="absolute bottom-1 right-2 flex items-center gap-1">
+                              <span className={`text-[9px] font-medium opacity-50 ${isAdmin ? 'text-white' : 'text-gray-400'}`}>
+                                {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                              </span>
+                              {isAdmin && (
+                                <svg viewBox="0 0 16 11" width="14" height="11" fill="currentColor" className="text-blue-400 opacity-70">
+                                  <path d="M11.053 1.514L5.432 7.135 2.431 4.134 1.514 5.051l3.918 3.918 6.538-6.537zM14.54 1.514l-6.538 6.538.917.917 6.538-6.538z" />
+                                </svg>
+                              )}
+                           </div>
+                        </div>
                       </div>
-                      <div className={`max-w-[75%] px-6 py-4 rounded-[1.5rem] text-sm font-medium shadow-sm transition-all hover:shadow-md ${
-                        msg.senderName.toLowerCase().includes('admin') 
-                          ? 'bg-emerald-900 text-white rounded-tr-none shadow-emerald-900/10' 
-                          : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
-                      }`}>
-                        {msg.content}
-                      </div>
-                      <span className="text-[8px] font-black text-gray-300 mt-2 px-2 uppercase italic">
-                        {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                      </span>
-                    </div>
-                  ))}
+                    );
+                    return acc;
+                  }, [])}
                   <div ref={messagesEndRef} />
                 </div>
 
                 {/* Input Area */}
-                <div className="p-6 bg-white border-t border-gray-100">
-                  <form onSubmit={onSendMessage} className="relative flex items-center">
+                <div className="p-4 bg-[#f0f2f5] border-t border-gray-200">
+                  <form onSubmit={onSendMessage} className="relative flex items-center gap-3">
                     <input 
                       type="text"
                       placeholder="Type a message..."
-                      className="w-full bg-gray-50 border-transparent focus:bg-white focus:border-emerald-900 focus:ring-4 focus:ring-emerald-950/5 rounded-2xl px-6 py-4 pr-16 text-sm font-medium transition-all"
+                      className="w-full bg-white border-transparent focus:ring-0 rounded-xl px-6 py-4 text-sm font-medium transition-all shadow-sm"
                       value={replyMessage}
                       onChange={(e) => setReplyMessage(e.target.value)}
                     />
                     <button 
                       type="submit"
-                      className="absolute right-2 p-3 bg-emerald-900 text-white rounded-xl hover:bg-emerald-800 transition-all shadow-lg shadow-emerald-900/10"
+                      className="w-14 h-14 bg-emerald-900 text-gold-500 rounded-full flex items-center justify-center hover:scale-105 transition-all shadow-lg"
                     >
-                      <Send className="w-4 h-4" />
+                      <Send className="w-5 h-5 ml-1" />
                     </button>
                   </form>
                 </div>

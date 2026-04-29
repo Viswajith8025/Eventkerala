@@ -59,14 +59,14 @@ const EventMap = ({ events, height = '500px' }) => {
                   className="w-full h-24 object-cover rounded-xl mb-2" 
                 />
                 <h4 className="font-bold text-gray-900 leading-tight mb-1">{event.title}</h4>
-                <p className="text-xs text-indigo-600 font-bold uppercase mb-2">{event.district}</p>
+                <p className="text-xs text-emerald-900 font-bold uppercase mb-2">{event.district}</p>
                 <div className="flex justify-between items-center mt-2">
                   <span className="text-xs text-gray-500 font-medium">
                     {new Date(event.date).toLocaleDateString()}
                   </span>
                   <a 
                     href={`/events/${event._id}`} 
-                    className="text-xs font-bold text-indigo-600 hover:underline"
+                    className="text-xs font-bold text-emerald-900 hover:underline"
                   >
                     Details
                   </a>

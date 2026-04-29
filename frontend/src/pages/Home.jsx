@@ -391,7 +391,7 @@ const Home = () => {
             </div>
             <h2 className="text-5xl font-display text-white leading-tight">Your personality, <br /> <span className="text-gold-500 italic">matched with heritage.</span></h2>
             <p className="text-white/70 text-lg font-medium leading-relaxed">Our intelligence tool analyzes your cultural curiosity to recommend experiences that resonate with your preferences. From silent temple mornings to vibrant ritual chants.</p>
-            <button className="px-10 py-5 bg-white text-emerald-950 rounded-2xl font-black text-xs tracking-widest uppercase hover:scale-105 transition-all shadow-xl">Activate Matchmaker</button>
+            <Link to="/soulsync" className="inline-block px-10 py-5 bg-white text-emerald-950 rounded-2xl font-black text-xs tracking-widest uppercase hover:scale-105 transition-all shadow-xl">Activate Matchmaker</Link>
           </div>
         </div>
       </section>

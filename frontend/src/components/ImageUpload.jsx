@@ -59,7 +59,7 @@ const ImageUpload = ({ onUploadSuccess }) => {
     <div className="space-y-4">
       <div 
         className={`relative group h-64 w-full rounded-[2rem] border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center p-6 overflow-hidden ${
-          preview ? 'border-indigo-600 bg-white' : 'border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-indigo-400'
+          preview ? 'border-emerald-900 bg-white' : 'border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-emerald-700'
         }`}
       >
         {preview ? (
@@ -76,7 +76,7 @@ const ImageUpload = ({ onUploadSuccess }) => {
             </button>
 
             {uploading ? (
-              <div className="absolute inset-0 bg-indigo-900/40 backdrop-blur-sm flex flex-col items-center justify-center text-white">
+              <div className="absolute inset-0 bg-emerald-950/40 backdrop-blur-sm flex flex-col items-center justify-center text-white">
                 <Loader2 className="w-10 h-10 animate-spin mb-2" />
                 <span className="font-bold text-sm">Uploading...</span>
               </div>
@@ -89,7 +89,7 @@ const ImageUpload = ({ onUploadSuccess }) => {
           </>
         ) : (
           <>
-            <div className="p-4 bg-white rounded-2xl shadow-lg shadow-gray-200 mb-4 text-indigo-600 group-hover:scale-110 transition-transform">
+            <div className="p-4 bg-white rounded-2xl shadow-lg shadow-gray-200 mb-4 text-emerald-900 group-hover:scale-110 transition-transform">
               <Upload className="w-8 h-8" />
             </div>
             <div className="text-center">

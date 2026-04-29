@@ -77,11 +77,11 @@ function App() {
 
     socket.on('new_event', (data) => {
       toast.custom((t) => (
-        <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white/90 backdrop-blur-xl shadow-2xl rounded-[1.5rem] pointer-events-auto flex ring-1 ring-black ring-opacity-5 p-4 border border-indigo-100`}>
+        <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white/90 backdrop-blur-xl shadow-2xl rounded-[1.5rem] pointer-events-auto flex ring-1 ring-black ring-opacity-5 p-4 border border-emerald-100`}>
           <div className="flex-1 w-0 p-1">
             <div className="flex items-start">
               <div className="flex-shrink-0 pt-0.5">
-                <div className="h-10 w-10 flex items-center justify-center bg-indigo-600 rounded-full text-white font-bold text-xs ring-4 ring-indigo-50">
+                <div className="h-10 w-10 flex items-center justify-center bg-emerald-900 rounded-full text-gold-500 font-bold text-xs ring-4 ring-emerald-50">
                   NEW
                 </div>
               </div>
@@ -90,7 +90,7 @@ function App() {
                    New Event in {data.district}!
                 </p>
                 <p className="mt-1 text-sm text-gray-500 font-medium line-clamp-1">
-                  {data.title}
+                   {data.title}
                 </p>
               </div>
             </div>
@@ -98,9 +98,9 @@ function App() {
           <div className="flex border-l border-gray-100 pl-4 ml-4">
             <button
               onClick={() => toast.dismiss(t.id)}
-              className="w-full border border-transparent rounded-none rounded-r-lg p-2 flex items-center justify-center text-xs font-bold text-indigo-600 hover:text-indigo-500 focus:outline-none"
+              className="w-full border border-transparent rounded-none rounded-r-lg p-2 flex items-center justify-center text-xs font-black text-emerald-900 hover:text-gold-600 focus:outline-none tracking-widest"
             >
-              Dismiss
+              DISMISS
             </button>
           </div>
         </div>
